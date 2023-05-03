@@ -31,7 +31,8 @@ Enter 0 to exit the game or 1 to replay
 You have three attempts to guess a random number					
 between 10 and 14(both inclusive) to win Kshs.1000\U0001F60D					
 Enter guess: """))
-                                if new_guess0 == randint(10, 14):
+                                correct_guess_replay = randint(10, 14)
+                                if new_guess0 == correct_guess_replay:
                                     print(f"""					
 Correct guess, correct number was {new_guess0}					
 you have won Kshs 1000\U0001F60D """)
@@ -39,11 +40,12 @@ you have won Kshs 1000\U0001F60D """)
                                     user_retrial0()
                                 else:
                                     new_guess1 = int(input(f"""					
-Wrong guess, correct number was {new_guess0}\U0001F612,					
+Wrong guess, correct number was {correct_guess_replay}\U0001F612,					
 second last chance to win Kshs.1000					
 Enter guess: """))
                                     total_losses += 1
-                                    if new_guess1 == randint(10, 14):
+                                    correct_guess_replay1 = randint(10, 14)
+                                    if new_guess1 == correct_guess_replay1:
                                         print(f"""					
 Correct guess, correct number was {new_guess1}					
 you have won Kshs 1000\U0001F60D """)
@@ -51,11 +53,12 @@ you have won Kshs 1000\U0001F60D """)
                                         user_retrial0()
                                     else:
                                         new_guess2 = int(input(f"""					
-Wrong, correct number was {new_guess1}\U0001F612,					
+Wrong, correct number was {correct_guess_replay1}\U0001F612,					
 last chance to win Kshs.1000.					
 Enter guess: """))
                                         total_losses += 1
-                                        if new_guess2 == randint(10, 14):
+                                        correct_guess_replay2 = randint(10, 14)
+                                        if new_guess2 == correct_guess_replay2:
                                             print(f"""					
 Correct guess, the correct number was {new_guess2}					
 you have won Kshs.1000\U0001F60D""")
@@ -63,7 +66,7 @@ you have won Kshs.1000\U0001F60D""")
                                             user_retrial0()
                                         else:
                                             print(f"""					
-Wrong guess, correct number was {new_guess2}\U0001F612,					
+Wrong guess, correct number was {correct_guess_replay2}\U0001F612,					
 You have exhausted your chances\U0001F602\n					
 """)
                                             total_losses += 1
@@ -94,7 +97,7 @@ Enter guess: """))
                 guess_choice0 = randint(10, 14)
                 if user_guess == guess_choice0:
                     print(f"""					
-Correct guess, correct number was {guess_choice0}					
+Correct guess, correct number was {user_guess}					
 you have won Kshs.1000\U0001F60D""")
                     total_wins += 1
                     user_retrial0()
@@ -108,7 +111,7 @@ Enter guess: """))
                     guess_choice1 = randint(10, 14)
                     if guess2 == guess_choice1:
                         print(f"""					
-Correct guess, correct number was {guess_choice1}					
+Correct guess, correct number was {guess2}					
 you have won Kshs 1000\U0001F60D """)
                         total_wins += 1
                         user_retrial0()
@@ -122,7 +125,7 @@ Enter guess: """))
                         guess_choice2 = randint(10, 14)
                         if last_guess == guess_choice2:
                             print(f"""					
-Correct guess, the correct number was {guess_choice2}					
+Correct guess, the correct number was {last_guess}					
 you have won Kshs.1000\U0001F60D""")
                             total_wins += 1
                             user_retrial0()
