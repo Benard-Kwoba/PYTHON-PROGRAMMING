@@ -1,0 +1,165 @@
+def guessing_game():
+    from random import randint
+
+    try:
+        total_wins = 0
+        total_losses = 0
+        guess_count = 0
+        guess1 = False
+        last_guess = False
+        progress = 'Yes'
+        stop = 'No'
+        while guess_count < 1:
+
+            def user_retrial0():
+                """
+                function inside main loop, breaks it if condition not met
+                """
+                nonlocal stop
+                count = 0
+                while count < 1:
+                    retrial = input(f'''					
+Enter 0 to exit the game or 1 to replay					
+: ''')
+                    if retrial == str(1):
+                        def replay():
+                            nonlocal total_losses
+                            nonlocal total_wins
+                            counts = 0
+                            while counts < 1:
+                                new_guess0 = int(input(f"""					
+You have three attempts to guess a random number					
+between 10 and 14(both inclusive) to win Kshs.1000\U0001F60D					
+Enter guess: """))
+                                if new_guess0 == randint(10, 14):
+                                    print(f"""					
+Correct guess, correct number was {new_guess0}					
+you have won Kshs 1000\U0001F60D """)
+                                    total_wins += 1
+                                    user_retrial0()
+                                else:
+                                    new_guess1 = int(input(f"""					
+Wrong guess, correct number was {new_guess0}\U0001F612,					
+second last chance to win Kshs.1000					
+Enter guess: """))
+                                    total_losses += 1
+                                    if new_guess1 == randint(10, 14):
+                                        print(f"""					
+Correct guess, correct number was {new_guess1}					
+you have won Kshs 1000\U0001F60D """)
+                                        total_wins += 1
+                                        user_retrial0()
+                                    else:
+                                        new_guess2 = int(input(f"""					
+Wrong, correct number was {new_guess1}\U0001F612,					
+last chance to win Kshs.1000.					
+Enter guess: """))
+                                        total_losses += 1
+                                        if new_guess2 == randint(10, 14):
+                                            print(f"""					
+Correct guess, the correct number was {new_guess2}					
+you have won Kshs.1000\U0001F60D""")
+                                            total_wins += 1
+                                            user_retrial0()
+                                        else:
+                                            print(f"""					
+Wrong guess, correct number was {new_guess2}\U0001F612,					
+You have exhausted your chances\U0001F602\n					
+""")
+                                            total_losses += 1
+                                            user_retrial0()
+                                counts += 1
+                        replay()
+
+                    elif retrial == str(0):
+                        stop = 'Yes'
+                        print(f"""
+Bye...
+    
+Your records:
+Total Wins: {total_wins}
+Total Losses: {total_losses}
+
+~END~
+""")
+                        break
+                    else:
+                        user_retrial0()
+                    count += 1
+            if progress == 'Yes' and stop == 'No':
+                user_guess = int(input(f"""					
+You have three attempts to guess a random number					
+between 10 and 14(both inclusive) to win Kshs.1000\U0001F60D					
+Enter guess: """))
+                guess_choice0 = randint(10, 14)
+                if user_guess == guess_choice0:
+                    print(f"""					
+Correct guess, correct number was {guess_choice0}					
+you have won Kshs.1000\U0001F60D""")
+                    total_wins += 1
+                    user_retrial0()
+                else:
+                    guess1 = True
+                    guess2 = int(input(f"""					
+Wrong guess, correct number was {guess_choice0}\U0001F612,					
+second last chance to win Kshs.1000					
+Enter guess: """))
+                    total_losses += 1
+                    guess_choice1 = randint(10, 14)
+                    if guess2 == guess_choice1:
+                        print(f"""					
+Correct guess, correct number was {guess_choice1}					
+you have won Kshs 1000\U0001F60D """)
+                        total_wins += 1
+                        user_retrial0()
+                    else:
+                        last_guess = True
+                        last_guess = int(input(f"""					
+Wrong, correct number was {guess_choice1}\U0001F612,					
+last chance to win Kshs.1000.					
+Enter guess: """))
+                        total_losses += 1
+                        guess_choice2 = randint(10, 14)
+                        if last_guess == guess_choice2:
+                            print(f"""					
+Correct guess, the correct number was {guess_choice2}					
+you have won Kshs.1000\U0001F60D""")
+                            total_wins += 1
+                            user_retrial0()
+                        else:
+                            print(f"""					
+Wrong guess, correct number was {guess_choice2}\U0001F612,					
+You have exhausted your chances\U0001F602\n					
+""")
+                            total_losses += 1
+                            user_retrial0()
+            guess_count += 1
+
+    except ValueError:
+        def user_retrials():
+            count = 0
+            while count < 1:
+                retrial1 = input(f'''					
+\U0001F61EOh, do not ruin my game please\U0001F62D					
+Enter 0 to exit the game or 1 to replay					
+: ''')
+                if retrial1 == str(1):
+                    guessing_game()
+                elif retrial1 == str(0):
+                    print(f"""
+Bye...
+
+Your records:
+Total Wins: {total_wins}
+Total Losses: {total_losses}
+""")
+                    break
+                else:
+                    user_retrials()
+                count += 1
+
+        user_retrials()
+
+
+guessing_game()
+
