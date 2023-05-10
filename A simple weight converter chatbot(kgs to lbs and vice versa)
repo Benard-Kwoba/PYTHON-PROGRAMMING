@@ -30,7 +30,7 @@ Enter weight in pounds
 : """))
                     kgs = round(wpds * pound, 4)
                     print(f"""
-{user_name}, You weight:
+{user_name}, You weigh:
 {kgs} kilos
 Bye...
 """)
@@ -41,7 +41,7 @@ Enter weight in kilos
 : """))
                     pds = round(wkgs / pound, 4)
                     print(f"""
-{user_name}, You weight:
+{user_name}, You weigh:
 {pds} pounds
 Bye...
 """)
