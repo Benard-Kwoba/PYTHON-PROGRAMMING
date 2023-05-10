@@ -1,0 +1,68 @@
+
+def weight_converter_chatbot():
+    from scipy.constants import pound
+
+    admin_name = 'Chatweighconv'
+    user_init = input(f"""
+Hello there!
+: """)
+    conversion_counter = 0
+    while conversion_counter < 1:
+        user_consent = input(f"""
+My name is '{admin_name}' and I am a weight converter chatbot.
+I can convert your weight from kilos to pounds
+or pounds to kilos. Are you interested?
+Enter 1 for a Yes or 0 for a No
+: """).lower()
+        if user_consent == '1':
+            user_name = input(f"""
+Enter your name
+: """)
+            conversion_init = input(f"""
+Ok, {user_name}, Enter 'p' to convert from kgs to pounds,
+or 'k' to convert from pounds to kgs
+ """).casefold()
+
+            try:
+                def weight_to_kgs():
+                    wpds = float(input(f"""
+Enter weight in pounds
+: """))
+                    kgs = round(wpds * pound, 4)
+                    print(f"""
+{user_name}, You weight:
+{kgs} kilos
+Bye...
+""")
+
+                def weight_to_pds():
+                    wkgs = float(input(f"""
+Enter weight in kilos
+: """))
+                    pds = round(wkgs / pound, 4)
+                    print(f"""
+{user_name}, You weight:
+{pds} pounds
+Bye...
+""")
+                if conversion_init == 'p':
+                    weight_to_pds()
+                elif conversion_init == 'k':
+                    weight_to_kgs()
+                else:
+                    print(f"""
+Bye...
+""")
+            except ValueError:
+                print(f"""
+Bye...
+""")
+        else:
+            print(f"""
+Thanks for your time
+Bye...
+""")
+        conversion_counter += 1
+
+
+weight_converter_chatbot()
