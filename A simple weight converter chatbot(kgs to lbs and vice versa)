@@ -2,7 +2,7 @@
 def weight_converter_chatbot():
     from scipy.constants import pound
 
-    admin_name = 'Chatweighconv'
+    admin_name = 'Chatwtconv'
     user_init = input(f"""
 Hello there!
 : """)
@@ -19,14 +19,14 @@ Enter 1 for a Yes or 0 for a No
 Enter your name
 : """)
             conversion_init = input(f"""
-Ok, {user_name}, Enter 'p' to convert from kgs to pounds,
+Ok {user_name}, Enter 'p' to convert from kgs to pounds,
 or 'k' to convert from pounds to kgs
- """).casefold()
+: """).casefold()
 
             try:
                 def weight_to_kgs():
                     wpds = float(input(f"""
-Enter weight in pounds
+Enter weight in pounds(only numbers)
 : """))
                     kgs = round(wpds * pound, 4)
                     print(f"""
@@ -37,7 +37,7 @@ Bye...
 
                 def weight_to_pds():
                     wkgs = float(input(f"""
-Enter weight in kilos
+Enter weight in kilos(only numbers)
 : """))
                     pds = round(wkgs / pound, 4)
                     print(f"""
@@ -57,6 +57,7 @@ Bye...
                 print(f"""
 Bye...
 """)
+
         else:
             print(f"""
 Thanks for your time
@@ -66,3 +67,4 @@ Bye...
 
 
 weight_converter_chatbot()
+
