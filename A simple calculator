@@ -1,5 +1,5 @@
 def simple_calculator():
-    import re
+    from re import findall
 
     try:
         while True:
@@ -49,7 +49,7 @@ Enter second number
             if sign == str(1):
                 print(symbols)
                 simple_calculator()
-            if not re.findall(sign, symbols):
+            if not findall(sign, symbols):
                 user_error = input(f"""
 {sign} is not recognized as symbol
 press 0 to exit or 1 to continue
