@@ -1,0 +1,84 @@
+def simple_calculator():
+    import re
+
+    try:
+        while True:
+            symbols = f"""
+*  for multiplication
+/  for division
+-  for subtraction
++  for addition
+^  for exponentiation
+%  for modulus
+"""
+            in0 = float(input(f"""
+Enter first number
+: """))
+            sign = input(f"""
+Select symbol:
+{symbols}
+: """)
+            in1 = float(input(f"""
+Enter second number
+: """))
+            answer = ''
+            if sign == '*':
+                answer = in0 * in1
+                print(f'{in0} * {in1} = {answer}')
+                break
+            if sign == '-':
+                answer = in0 - in1
+                print(f'{in0} - {in1} = {answer}')
+                break
+            if sign == '/':
+                answer = in0 / in1
+                print(f'{in0} / {in1} = {answer}')
+                break
+            if sign == '+':
+                answer = in0 + in1
+                print(f'{in0} + {in1} = {answer}')
+                break
+            if sign == '^':
+                answer = in0 ** in1
+                print(f'{in0} ** {in1} = {answer}')
+                break
+            if sign == '%':
+                answer = in0 % in1
+                print(f'{in0} % {in1} = {answer}')
+                break
+            if sign == str(1):
+                print(symbols)
+                simple_calculator()
+            if not re.findall(sign, symbols):
+                user_error = input(f"""
+{sign} is not recognized as symbol
+press 0 to exit or 1 to continue
+""")
+                if user_error == str(1):
+                    simple_calculator()
+                else:
+                    break
+    except ValueError:
+        error = input(f"""
+Only numbers allowed
+press 0 to exit or 1 to continue
+: """)
+        if error == str(1):
+            simple_calculator()
+    except ZeroDivisionError:
+        zero = input(f"""
+Dividing a number by zero results to infinity
+press 0 to exit or 1 to continue
+: """)
+        if zero == str(1):
+            simple_calculator()
+    except Exception:
+        other_errors = input(f"""
+Kindly recheck the symbol used
+press 0 to exit or 1 to continue
+: """)
+        if other_errors == str(1):
+            simple_calculator()
+
+
+simple_calculator()
