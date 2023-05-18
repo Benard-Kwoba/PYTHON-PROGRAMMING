@@ -1,1 +1,83 @@
+def simple_calculator():
+    try:
+        input0 = float(input(f"""
+Enter first number 
+: """))
+        sign = input(f"""
+Choose operator
+* for multiplication
+- for subtraction
++ for addition
+/ for division
+% for modulus
+^ for exponentiation
+: """)
+        input1 = float(input(f"""
+Enter second number
+: """))
+        while True:
+            answer = ''
+            if sign == '*':
+                answer = input0 * input1
+                print(f"""
+{input0} * {input1} = {answer}
+""")
+                break
+            elif sign == '/':
+                answer = input0 / input1
+                print(f"""
+{input0} / {input1} = {answer}
+""")
+                break
+            elif sign == '+':
+                answer = input0 + input1
+                print(f"""
+{input0} + {input1} = {answer}
+""")
+                break
+            elif sign == '-':
+                answer = input0 - input1
+                print(f"""
+{input0} - {input1} = {answer}
+""")
+                break
+            elif sign == '%':
+                answer = input0 % input1
+                print(f"""
+{input0} % {input1} = {answer}
+""")
+                break
+            elif sign == '^':
+                answer = input0 ** input1
+                print(f"""
+{input0} ^ {input1} = {answer}
+""")
+                break
+            else:
+                print(f"""
+The sign you have used {sign} is illegal
+""")
+                break
+    except ZeroDivisionError:
+        zero_error = input(f"""
+Note: Dividing by zero results to infinity
+""")
+        simple_calculator()
+    except Exception:
+        print(f"""
+Kindly recheck your entries.
+Use number only and below operators:\
+* for multiplication
+- for subtraction
++ for addition
+/ for division
+% for modulus
+^ for exponentiation
+""")
+        simple_calculator()
+
+
+simple_calculator()
+
+
 
