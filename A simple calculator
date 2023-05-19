@@ -59,7 +59,7 @@ The sign you have used {sign} is illegal
 """)
                 break
     except ZeroDivisionError:
-        zero_error = input(f"""
+        zero_error = print(f"""
 Note: Dividing by zero results to infinity
 """)
         simple_calculator()
