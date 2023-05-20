@@ -1,0 +1,17 @@
+def get_acronyms():
+    while True:
+        title = input('Enter title: ')
+        lst = title.split()
+        lst1 = []
+        final = ''
+        acronym = ''
+        for letter in lst:
+            first = letter[0].upper()
+            lst1.append(first)
+        for acronym in lst1:
+            final += (acronym + '.')
+        acronym = final[:len(final)-1]
+        print(f"Acronym for '{title}' is:\n{acronym}")
+
+
+get_acronyms()
