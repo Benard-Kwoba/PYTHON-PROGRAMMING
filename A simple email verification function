@@ -38,6 +38,7 @@ For example, "example@example.com" is equivalent to "EXAMPLE@EXAMPLE.COM".
             check_pattern = True
         else:
             check_pattern = False
+
         check_space = findall("[ ]", email)
         if check_space:
             check_spaces = False
@@ -48,6 +49,8 @@ For example, "example@example.com" is equivalent to "EXAMPLE@EXAMPLE.COM".
         tld = domain[idx_tld + 1:]
         domain_name = domain[0:idx_tld]
         domain_check = ['Invalid' if x in punctuation else 'Valid' for x in domain_name]
+        if not domain_name:
+            check_domain = False
         for x in domain_check:
             if x == 'Invalid':
                 check_domain = False
@@ -72,4 +75,3 @@ For example, "example@example.com" is equivalent to "EXAMPLE@EXAMPLE.COM".
 
 
 email_validity_test()
-
