@@ -1,0 +1,75 @@
+def email_validity_test():
+    from re import findall
+    from string import punctuation
+
+    declaration = ''
+    try:
+        valid_symbols = ["_", ".", "-"]
+        illegal_domain_symbols = set(punctuation) - set(valid_symbols)
+        check_ends = True
+        check_pattern = True
+        check_spaces = True
+        check_domain = True
+        check_tld = True
+        declaration = f"""
+Email addresses generally follow certain naming rules and conventions. 
+Here are some common rules for email address naming:
+1. Local Part: The local part of an email address appears before the "@" symbol. 
+It may contain alphanumeric characters (letters and digits), underscores, periods, and hyphens. 
+However, it cannot start or end with a period or hyphen, and consecutive periods or hyphens are not allowed.
+2. Domain Part: The domain part of an email address appears after the "@" symbol. 
+It consists of a domain name and a top-level domain (TLD). 
+The domain name can contain alphanumeric characters and hyphens, but it cannot start or end with a hyphen. 
+The TLD specifies the type of domain (e.g., .com, .org, .edu) and should consist of only alphabetic characters.
+3. Case Sensitivity: Email addresses are generally not case-sensitive. 
+For example, "example@example.com" is equivalent to "EXAMPLE@EXAMPLE.COM".
+"""
+        email = input("Enter email address: ")
+        if email.startswith(('-', '.')) or email.endswith(('-', '.')):
+            check_ends = False
+        else:
+            check_ends = True
+        email_part_local = email[0:email.find('@')]
+        for symbol in email_part_local:
+            if symbol in illegal_domain_symbols:
+                check_ends = False
+        pattern = findall(r".+@.+", email)
+        if pattern:
+            check_pattern = True
+        else:
+            check_pattern = False
+        check_space = findall("[ ]", email)
+        if check_space:
+            check_spaces = False
+        else:
+            check_spaces = True
+        domain = email[email.find('@') + 1:]
+        idx_tld = domain.index('.')
+        tld = domain[idx_tld + 1:]
+        domain_name = domain[0:idx_tld]
+        domain_check = ['Invalid' if x in punctuation else 'Valid' for x in domain_name]
+        for x in domain_check:
+            if x == 'Invalid':
+                check_domain = False
+            else:
+                check_domain = True
+        tld_check = ['Invalid' for x in tld if x in punctuation ]
+        for x in tld_check:
+            if x == 'Invalid':
+                check_tld = False
+            else:
+                check_tld = True
+
+        list_check = []
+        list_check.extend([check_ends, check_pattern, check_spaces, check_domain,check_tld])
+        if all(list_check):
+            print(f'Valid email')
+        else:
+            print(f'Invalid email\n{declaration}')
+
+    except ValueError:
+        print(f'Invalid email\n{declaration}')
+
+
+email_validity_test()
+
