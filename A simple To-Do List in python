@@ -1,0 +1,130 @@
+def todo_list():
+
+    pending = []
+    completed = []
+    all_tasks = []
+
+    def menu():
+        print(f"""
+_____________MENU__________________
+1 - To View Tasks
+2 - To Add Tasks
+3 - To Mark Tasks As Completed
+4 - To View All Completed Tasks
+5 - To View Items Pending Completion
+6 - To Clear Completed Items
+____________________________________""", end='')
+
+    def view_tasks():
+        nonlocal all_tasks
+        if len(all_tasks) == 0:
+            print(f"""
+You have no tasks""")
+        else:
+            print(f"""
+All tasks""")
+            for i, v in enumerate(all_tasks):
+                print(i + 1, v.capitalize())
+
+    def add_tasks():
+        nonlocal all_tasks
+        task = input(f"""
+Enter a task
+: """)
+        while task:
+            all_tasks.append(f'{task.capitalize()}')
+            print(f"""
+'{task}' has been added successfully""")
+            print(f"""
+All tasks:""")
+            for i, v in enumerate(all_tasks):
+                print(i + 1, v.capitalize())
+            break
+        else:
+            add_tasks()
+
+    def mark_as_completed():
+        nonlocal pending
+        nonlocal completed
+        nonlocal all_tasks
+        if not all_tasks:
+            print(f"""
+You have no tasks""")
+            main()
+        else:
+            print(f'All tasks:')
+            for i, v in enumerate(all_tasks):
+                print(i + 1, v.capitalize())
+            user = input(f"""
+Enter the task number to mark as completed
+: """)
+            for idx in range(1, len(all_tasks) + 1):
+                if user == str(idx):
+                    done = all_tasks.pop(idx - 1)
+                    pending = all_tasks
+                    completed.append(done)
+                    print(f'''
+Task marked as completed''')
+
+    def view_completed():
+        nonlocal completed
+        if len(completed) == 0:
+            print(f"""
+You have no tasks""")
+            main()
+        else:
+            for i, v in enumerate(completed):
+                print(i + 1, v.capitalize())
+
+    def pending_completion():
+        nonlocal pending
+        if not pending:
+            print(f"""
+You have no tasks pending completion""")
+            main()
+        else:
+            print(f"""
+Tasks pending completion""")
+            for i, v in enumerate(pending):
+                print(i + 1, v.capitalize())
+
+    def clear_completed():
+        nonlocal completed
+        if not completed:
+            print(f"""
+You have no tasks""")
+            main()
+        else:
+            completed.clear()
+            print(f"""
+All completed tasks cleared
+""")
+
+    def main():
+        while True:
+            menu()
+            user_choice = input(f"""
+Enter your selection
+: """)
+            if user_choice == str(1):
+                view_tasks()
+            elif user_choice == str(2):
+                add_tasks()
+            elif user_choice == str(3):
+                mark_as_completed()
+            elif user_choice == str(4):
+                view_completed()
+            elif user_choice == str(5):
+                pending_completion()
+            elif user_choice == str(6):
+                clear_completed()
+            else:
+                print(f"""
+___________Invalid Choice___________""")
+                break
+
+    main()
+
+
+if __name__ == "__main__":
+    todo_list()
