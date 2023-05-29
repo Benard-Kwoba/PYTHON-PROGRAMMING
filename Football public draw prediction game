@@ -1,0 +1,49 @@
+def football_public_draw():
+    from random import choice
+    start = 0
+    while start < 1:
+        user = input(f"""
+In a public draw of a Germany Bundesliga football match,
+Make a prediction on the most likely outcome from the public draw.
+H - for home team win
+D - for a draw
+A - for away team win
+: """).upper()
+        computer = choice(['H', 'D', 'A'])
+        if user == computer:
+            retry0 = input(f"""
+_____________________________________________
+You: {user}
+Computer: {computer}
+_____________________________________________
+You won!!!. 
+_____________________________________________
+Retry?(Yes/No): """).lower()
+            print(f"""
+_____________________________________________""")
+            if retry0.startswith('y'):
+                football_public_draw()
+            else:
+                print('Bye')
+                break
+        elif user != computer:
+            retry = input(f"""
+_____________________________________________
+You: {user}
+Computer: {computer}
+_____________________________________________
+You lost!!!. 
+_____________________________________________
+Retry?(Yes/No): """).lower()
+
+            if retry.startswith('y'):
+                football_public_draw()
+            else:
+                print('Bye')
+                break
+        else:
+            pass
+        start += 1
+
+
+football_public_draw()
