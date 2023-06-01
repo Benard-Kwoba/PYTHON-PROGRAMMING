@@ -1,12 +1,18 @@
-import re
-user_input = input('Enter email: ')
+def email_validity_check():
+    import re
 
-pattern = re.findall(r"\b[^\W][a-zA-Z0-9.-_]+[\w$]*@\b[^\W][a-zA-Z0-9_.-]+[\w$]*\.[a-z|A-Z]+", user_input)
+    try:
+        user_input = input('Enter email: ')
+        pattern = re.findall(r"\b[^\W][a-zA-Z0-9.-_]+[\w$]*(?<!@)@[^\W][a-zA-Z0-9_.-]+[\w$]*(?<!\.)\.[a-z|A-Z]+",
+                             user_input)
+        print(pattern[0])
 
-try:
-    if pattern[0] == user_input:
-        print(f'Your email:\n\t{user_input}\nValid part of your email:\n\t{pattern[0]}\nVerdict:\nCorrect email')
-    else:
-        print(f'Your email:\n\t{user_input}\nValid part of your email:\n\t{pattern[0]}\nVerdict:\nInvalid email')
-except IndexError:
-    print('Invalid email')
+        if pattern[0] == user_input:
+            print(f'Your email:\n\t{user_input}\nValid part of your email:\n\t{pattern[0]}\nVerdict:\nCorrect email')
+        else:
+            print(f'Your email:\n\t{user_input}\nValid part of your email:\n\t{pattern[0]}\nVerdict:\nInvalid email')
+    except IndexError:
+        print('Invalid email')
+
+
+email_validity_check()
