@@ -1,7 +1,7 @@
 import re
 user_input = input('Enter email: ')
 
-pattern = re.findall(r"\b[a-zA-Z0-9_.]+@[a-zA-Z0-9.]+\.[a-z|A-Z]+", user_input)
+pattern = re.findall(r"\b[^\W][a-zA-Z0-9.-_]+[\w$]*@\b[^\W][a-zA-Z0-9_.-]+[\w$]*\.[a-z|A-Z]+", user_input)
 
 try:
     if pattern[0] == user_input:
@@ -10,4 +10,3 @@ try:
         print(f'Your email:\n\t{user_input}\nValid part of your email:\n\t{pattern[0]}\nVerdict:\nInvalid email')
 except IndexError:
     print('Invalid email')
-
