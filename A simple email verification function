@@ -29,7 +29,7 @@ For example, "example@example.com" is equivalent to "EXAMPLE@EXAMPLE.COM".
             check_ends = False
         else:
             check_ends = True
-        email_part_local = email[0:email.find('@')]
+        email_part_local = email[0:email.rfind('@')]
         for symbol in email_part_local:
             if symbol in illegal_domain_symbols:
                 check_ends = False
