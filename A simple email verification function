@@ -56,7 +56,8 @@ For example, "example@example.com" is equivalent to "EXAMPLE@EXAMPLE.COM".
                 check_domain = False
             else:
                 check_domain = True
-        tld_check = ['Invalid' for x in tld if x in punctuation ]
+        tld_check = ['Invalid' for x in tld if x in punctuation]
+        tld_check = ['Invalid' for x in tld if x.isdigit()]
         for x in tld_check:
             if x == 'Invalid':
                 check_tld = False
