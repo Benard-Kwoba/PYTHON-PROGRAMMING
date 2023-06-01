@@ -3,7 +3,7 @@ def email_validity_check():
 
     try:
         user_input = input('Enter email: ')
-        pattern = re.findall(r"\b[^\W][a-zA-Z0-9.-_]+[\w$]*(?<!@)@[^\W][a-zA-Z0-9_.-]+[\w$]*(?<!\.)\.[a-z|A-Z]+",
+        pattern = re.findall(r"\b[^\W][a-zA-Z0-9_.-]+[\w$]*(?<!@)@[^\W][a-zA-Z0-9_.-]+[\w$]*(?<!\.)\.[a-z|A-Z]+",
                              user_input)
         print(pattern[0])
 
@@ -16,3 +16,5 @@ def email_validity_check():
 
 
 email_validity_check()
+
+
