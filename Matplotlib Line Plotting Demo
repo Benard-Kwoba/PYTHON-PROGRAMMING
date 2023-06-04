@@ -1,0 +1,48 @@
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+
+bella = np.array([55, 78, 84, 74, 66])  # source data can vary
+francis = np.array([94, 85, 65, 66, 58])
+
+xlabels = pd.date_range("20230529", periods=5).strftime("%d-%m-%Y")
+plt.plot(xlabels,
+         bella,
+         linestyle='--',
+         color='b',
+         marker ='o',
+          markersize=5.5,
+         markeredgecolor='k',
+         markerfacecolor='y',
+         linewidth=1.5,
+        label='Bella')
+for i, value in enumerate(bella):  # adding data lables specifying position position
+    plt.text(i, value, str(value), ha='center', va='bottom')
+plt.plot(xlabels,
+         francis,
+         linestyle='--',
+         color='m',
+         marker ='o',
+         markersize=5.5,
+         markeredgecolor='k',
+         markerfacecolor='y',
+         linewidth=1.5,
+        label='Francis')
+#  adding font dictionary for title and labels
+font1 = {'family': 'serif',
+         'color': 'orange',
+         'size': 14,
+        'weight': 'bold'}
+font2 = {'family': 'serif',
+         'color': 'darkorange',
+         'size': 12,
+        'weight': 'bold',
+        'style': 'italic'}
+for i, value in enumerate(francis):
+    plt.text(i, value, str(value), ha='center', va='bottom')
+plt.xlabel('Week days', fontdict=font2)
+plt.ylabel('Student scores %', fontdict=font2)
+plt.legend()
+plt.grid(True, color='c')
+plt.title('WEEKLY SCORES OF TOP TWO STUDENTS IN MATHS', fontdict=font1, loc='center')
+plt.show()
