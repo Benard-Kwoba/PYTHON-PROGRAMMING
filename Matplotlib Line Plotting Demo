@@ -1,3 +1,4 @@
+# DEMO 1:
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -46,3 +47,66 @@ plt.legend()
 plt.grid(True, color='c')
 plt.title('WEEKLY SCORES OF TOP TWO STUDENTS IN MATHS', fontdict=font1, loc='center')
 plt.show()
+
+# DEMO 2:
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def keg_trend():
+    df = pd.read_excel(r"C:\Users\OtienBer\Anaconda3\Lib\venv\NI1 Inventory app\warehouse excess and shorts(beer and keg).xlsx", sheet_name='keg excess and shorts')
+    pd.to_datetime(df["Dates"])
+    plt.plot(df["Dates"],
+        df["SENATOR 50L KEG REG"].values,
+             color='b',
+             marker='o',
+             mec='k',
+             mfc='y',
+             linewidth=1.5,
+             label='SENATOR 50L KEG REG')
+    for i, value in enumerate(df["SENATOR 50L KEG REG"]):
+        plt.text(df["Dates"][i], value, str(value), ha='center', va='bottom')
+    plt.plot(df["Dates"],
+             df["SENATOR 50L KEG DARK"].values,
+             color='r',
+             marker='o',
+             mec='k',
+             mfc='y',
+             linewidth=1.5,
+             label='SENATOR 50L KEG DARK')
+    for i, value in enumerate(df["SENATOR 50L KEG DARK"]):
+        plt.text(df["Dates"][i], value, str(value), ha='center', va='bottom')
+    plt.plot(df["Dates"],
+             df["TUSKER KEG 30L KEG"].values,
+             color='g',
+             marker='o',
+             mec='k',
+             mfc='y',
+             linewidth=1.5,
+             label='TUSKER KEG 30L KEG')
+    font_title = {'family': 'serif',
+                  'color': 'orange',
+                  'size': 14,
+                  'weight': 'bold'}
+    font_axes = {'family': 'serif',
+                 'color': 'darkorange',
+                 'size': 12,
+                 'weight': 'bold',
+                 'style': 'italic'}
+    plt.title('Keg Warehouse Performance Trend Analysis', fontdict=font_title)
+    plt.xlabel('Weekdays', fontdict=font_axes)
+    plt.ylabel('Variances in cases', fontdict=font_axes)
+    plt.legend()
+    plt.xticks(df["Dates"], df["Dates"].dt.strftime("%y-%m-%d"), rotation=35)
+    plt.grid(True, color='c')
+    plt.show()
+
+
+keg_trend()
+
+"""
+DEMO 2 CALLED WITH:
+from NI1_trend_analysis import beer_trend, keg_trend
+beer_trend()
+keg_trend()
+Source data: 
+"""
