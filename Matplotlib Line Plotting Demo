@@ -99,10 +99,4 @@ def keg_trend():
     # linestyle supported values: '-', '--', '-.', ':', 'None', ' ', '', 'solid', 'dashed', 'dashdot', 'dotted'
     plt.show()
     
-"""
-DEMO 2 CALLED WITH:
-from NI1_trend_analysis import beer_trend, keg_trend
-beer_trend()
-keg_trend()
-Source data: 
-"""
+
