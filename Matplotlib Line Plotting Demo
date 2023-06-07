@@ -129,7 +129,7 @@ def beer_keg_trend():
                   'size': 12,
                   'weight': 'bold',
                  'style': 'italic'}
-    plt.title('Beer Warehouse Performance Trend Analysis', fontdict=font_title)
+    plt.title('Beer Trend', fontdict=font_title)
     plt.xlabel('Operation Days', fontdict=font_axes)
     plt.ylabel('Variances in cases', fontdict=font_axes)
     plt.legend()  # label will appear in the legend
@@ -137,7 +137,7 @@ def beer_keg_trend():
     plt.grid(True, color='c', axis='both', linestyle = '--', linewidth = 0.5)  # axis supported values are'x','y','both'
     # linestyle supported values: '-', '--', '-.', ':', 'None', ' ', '', 'solid', 'dashed', 'dashdot', 'dotted'
     # ---------------------------------------------------------beginning of subplot 2-----------------------------------
-    plt.subplot(1, 2, 2)  # 1 row(both beer and keg will be on the same row), 2 columns, the keg figure appears in column 2
+    plt.subplot(1, 2, 2)
     df2 = pd.read_excel(r"C:\Users\OtienBer\Anaconda3\Lib\venv\NI1 Inventory app\warehouse excess and shorts(beer and keg).xlsx",
                        sheet_name='keg excess and shorts')
     pd.to_datetime(df2["Dates"])
@@ -180,14 +180,15 @@ def beer_keg_trend():
                  'size': 12,
                  'weight': 'bold',
                  'style': 'italic'}
-    plt.title('Keg Warehouse Performance Trend Analysis', fontdict=font_title)
-    plt.xlabel('Weekdays', fontdict=font_axes)
+    plt.title('Keg Trend', fontdict=font_title)
+    plt.xlabel('Operation Days', fontdict=font_axes)
     plt.ylabel('Variances in cases', fontdict=font_axes)
     plt.legend()
     plt.xticks(df2["Dates"], df2["Dates"].dt.strftime("%y-%m-%d"), rotation=35)
     plt.grid(True, color='c', axis='both', linestyle = '--', linewidth = 0.5)
     # ---------------------------------------------------------end of subplot 2-----------------------------------
     # ---------------------------------------------------------end of all subplots--------------------------------
+    plt.suptitle('NCD BEER AND KEG PERFORMANCE TREND', fontsize=16, fontweight='bold')  # adds a title to the entire fig
     plt.show()  # showing the plot - will show 2 plots in one figure
 
 beer_keg_trend()
