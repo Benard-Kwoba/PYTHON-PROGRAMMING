@@ -137,7 +137,7 @@ def beer_keg_trend():
     plt.grid(True, color='c', axis='both', linestyle = '--', linewidth = 0.5)  # axis supported values are'x','y','both'
     # linestyle supported values: '-', '--', '-.', ':', 'None', ' ', '', 'solid', 'dashed', 'dashdot', 'dotted'
     # ---------------------------------------------------------beginning of subplot 2-----------------------------------
-    plt.subplot(1, 2, 2)
+    plt.subplot(1, 2, 2)  # 1 row(both beer and keg will be on the same row), 2 columns, the keg figure appears in column 2
     df2 = pd.read_excel(r"C:\Users\OtienBer\Anaconda3\Lib\venv\NI1 Inventory app\warehouse excess and shorts(beer and keg).xlsx",
                        sheet_name='keg excess and shorts')
     pd.to_datetime(df2["Dates"])
