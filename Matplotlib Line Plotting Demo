@@ -1,4 +1,4 @@
-# DEMO 1:
+# LINEPLOTTING DEMO 1:
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -48,7 +48,7 @@ plt.grid(True, color='c')
 plt.title('WEEKLY SCORES OF TOP TWO STUDENTS IN MATHS', fontdict=font1, loc='center')
 plt.show()
 
-# DEMO 2:
+# LINEPLOTTING DEMO 2:
 def keg_trend():
     df = pd.read_excel(r"C:\Users\OtienBer\Anaconda3\Lib\venv\NI1 Inventory app\warehouse excess and shorts(beer and keg).xlsx",
                        sheet_name='keg excess and shorts')
@@ -99,4 +99,97 @@ def keg_trend():
     # linestyle supported values: '-', '--', '-.', ':', 'None', ' ', '', 'solid', 'dashed', 'dashdot', 'dotted'
     plt.show()
     
+# MATPLOTLIB SUBPLOT DEMO: Plotting two figures in one grid
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def beer_keg_trend():
+    df = pd.read_excel(r"C:\Users\OtienBer\Anaconda3\Lib\venv\NI1 Inventory app\warehouse excess and shorts(beer and keg).xlsx", sheet_name='beer excess and shorts')
+    pd.to_datetime(df["Dates"])
+    # ---------------------------------------------------------beginning of subplot 1-----------------------------------
+    plt.subplot(1, 2, 1)  # creating a 1x2(nrows, ncols) grid, with first figure being in column 1
+    plt.plot(df["Dates"],
+        df["All Beer Products"],
+        color='b',
+             marker='o',
+             mec='w',  # marker edge color
+             mfc='y',  # marker face color
+             linewidth=1.5,
+             label='All beer variances')
+    # adding data labels
+    for i, value in enumerate(df["All Beer Products"]):
+        rounded_value = round(value)  # rounding off to integers, we want to display integers
+        plt.text(df["Dates"][i], value, str(rounded_value), ha='center', va='bottom')  # adding text annotations
+    font_title = {'family': 'serif',
+            'color': 'orange',
+            'size': 14,
+            'weight': 'bold'}
+    font_axes = {'family': 'serif',
+                  'color': 'darkorange',
+                  'size': 12,
+                  'weight': 'bold',
+                 'style': 'italic'}
+    plt.title('Beer Warehouse Performance Trend Analysis', fontdict=font_title)
+    plt.xlabel('Operation Days', fontdict=font_axes)
+    plt.ylabel('Variances in cases', fontdict=font_axes)
+    plt.legend()  # label will appear in the legend
+    plt.xticks(df["Dates"], df["Dates"].dt.strftime("%y-%m-%d"), rotation=35)  # tick locations and labels, note dt pam
+    plt.grid(True, color='c', axis='both', linestyle = '--', linewidth = 0.5)  # axis supported values are'x','y','both'
+    # linestyle supported values: '-', '--', '-.', ':', 'None', ' ', '', 'solid', 'dashed', 'dashdot', 'dotted'
+    # ---------------------------------------------------------beginning of subplot 2-----------------------------------
+    plt.subplot(1, 2, 2)
+    df2 = pd.read_excel(r"C:\Users\OtienBer\Anaconda3\Lib\venv\NI1 Inventory app\warehouse excess and shorts(beer and keg).xlsx",
+                       sheet_name='keg excess and shorts')
+    pd.to_datetime(df2["Dates"])
+    plt.plot(df2["Dates"],
+        df2["SENATOR 50L KEG REG"].values,
+             color='b',
+             marker='o',
+             mec='k',
+             mfc='y',
+             linewidth=1.5,
+             label='SENATOR 50L KEG REG')
+    for i, value in enumerate(df2["SENATOR 50L KEG REG"]):
+        plt.text(df2["Dates"][i], value, str(value), ha='center', va='bottom')
+    plt.plot(df2["Dates"],
+             df2["SENATOR 50L KEG DARK"].values,
+             color='r',
+             marker='o',
+             mec='k',
+             mfc='y',
+             linewidth=1.5,
+             label='SENATOR 50L KEG DARK')
+    for i, value in enumerate(df2["SENATOR 50L KEG DARK"]):
+        plt.text(df2["Dates"][i], value, str(value), ha='center', va='bottom')
+    plt.plot(df2["Dates"],
+             df2["TUSKER KEG 30L KEG"].values,
+             color='g',
+             marker='o',
+             mec='k',
+             mfc='y',
+             linewidth=1.5,
+             label='TUSKER KEG 30L KEG')
+    for i, value in enumerate(df2["TUSKER KEG 30L KEG"]):
+        plt.text(df2["Dates"][i], value, str(value), ha='center', va='bottom')
+    font_title = {'family': 'serif',
+                  'color': 'orange',
+                  'size': 14,
+                  'weight': 'bold'}
+    font_axes = {'family': 'serif',
+                 'color': 'darkorange',
+                 'size': 12,
+                 'weight': 'bold',
+                 'style': 'italic'}
+    plt.title('Keg Warehouse Performance Trend Analysis', fontdict=font_title)
+    plt.xlabel('Weekdays', fontdict=font_axes)
+    plt.ylabel('Variances in cases', fontdict=font_axes)
+    plt.legend()
+    plt.xticks(df2["Dates"], df2["Dates"].dt.strftime("%y-%m-%d"), rotation=35)
+    plt.grid(True, color='c', axis='both', linestyle = '--', linewidth = 0.5)
+    # ---------------------------------------------------------end of subplot 2-----------------------------------
+    # ---------------------------------------------------------end of all subplots--------------------------------
+    plt.show()  # showing the plot - will show 2 plots in one figure
+
+beer_keg_trend()
+
 
