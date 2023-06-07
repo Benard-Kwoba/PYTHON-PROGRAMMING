@@ -188,7 +188,7 @@ def beer_keg_trend():
     plt.grid(True, color='c', axis='both', linestyle = '--', linewidth = 0.5)
     # ---------------------------------------------------------end of subplot 2-----------------------------------
     # ---------------------------------------------------------end of all subplots--------------------------------
-    plt.suptitle('NCD BEER AND KEG PERFORMANCE TREND', fontsize=16, fontweight='bold')  # adds a title to the entire fig
+    plt.suptitle('NCD BEER AND KEG PERFORMANCE TREND', fontsize=16, fontweight='bold')  # adds a super title to the entire fig
     plt.show()  # showing the plot - will show 2 plots in one figure
 
 beer_keg_trend()
