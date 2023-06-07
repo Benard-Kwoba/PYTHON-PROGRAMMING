@@ -1,0 +1,13 @@
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# relationship between tiktok users age and time spend on tiktok
+users_ages = np.array([15, 23, 28, 32, 36, 43, 47, 54, 57, 64, 69, 72, 77])
+time_seconds = np.array([3, 2.94, 2.60, 2.4, 2.1, 1.96, 1.01, 0.54, 0.36, 0.18, 0.10, 0.05, 0.03])
+
+plt.scatter(users_ages, time_seconds)
+plt.title('Comparison between titktok usage and individual age', weight='bold', c='m')
+plt.xlabel('Tiktok user age', c='orange')
+plt.ylabel('Average time spend on titktok(hours)', c='darkorange')
+plt.show()
