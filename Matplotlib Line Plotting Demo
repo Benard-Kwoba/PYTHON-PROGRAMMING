@@ -49,11 +49,9 @@ plt.title('WEEKLY SCORES OF TOP TWO STUDENTS IN MATHS', fontdict=font1, loc='cen
 plt.show()
 
 # DEMO 2:
-import pandas as pd
-import matplotlib.pyplot as plt
-
 def keg_trend():
-    df = pd.read_excel(r"C:\Users\OtienBer\Anaconda3\Lib\venv\NI1 Inventory app\warehouse excess and shorts(beer and keg).xlsx", sheet_name='keg excess and shorts')
+    df = pd.read_excel(r"C:\Users\OtienBer\Anaconda3\Lib\venv\NI1 Inventory app\warehouse excess and shorts(beer and keg).xlsx",
+                       sheet_name='keg excess and shorts')
     pd.to_datetime(df["Dates"])
     plt.plot(df["Dates"],
         df["SENATOR 50L KEG REG"].values,
@@ -97,12 +95,10 @@ def keg_trend():
     plt.ylabel('Variances in cases', fontdict=font_axes)
     plt.legend()
     plt.xticks(df["Dates"], df["Dates"].dt.strftime("%y-%m-%d"), rotation=35)
-    plt.grid(True, color='c')
+    plt.grid(True, color='c', axis='both', linestyle = '--', linewidth = 0.5)  # axis can be 'x', 'y' or 'both'
+    # linestyle supported values: '-', '--', '-.', ':', 'None', ' ', '', 'solid', 'dashed', 'dashdot', 'dotted'
     plt.show()
-
-
-keg_trend()
-
+    
 """
 DEMO 2 CALLED WITH:
 from NI1_trend_analysis import beer_trend, keg_trend
