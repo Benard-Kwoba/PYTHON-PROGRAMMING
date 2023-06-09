@@ -8,9 +8,9 @@ tiktok_time = np.array([2, 1.96, 1.65, 1.54, 1.12, 0.95, 0.75, 0.36, 0.24, 0.12,
 size = np.array([950, 750, 500, 300, 200, 100, 90, 70, 60, 50, 30])
 plt.scatter(user_age,
             tiktok_time,
-            c='red',  # for color
+            c='red',  # only use c-for color not 'color', you can also use a color array for each dot(colormap)
             s=size,  # s for size
-            label='Day 1 Observations',  # only use c-for color not 'color', you can also use a color array for each dot
+            label='Day 1 Observations',
             alpha=0.5)  # adjust the transparency of the dots with the alpha arg, range is 0-1
 # sample day 2:
 user_age2 = np.array([18, 25, 29, 34, 38, 45, 53, 59, 64, 70, 76])
