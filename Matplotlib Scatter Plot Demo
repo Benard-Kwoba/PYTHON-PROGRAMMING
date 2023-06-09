@@ -1,22 +1,27 @@
-
 import matplotlib.pyplot as plt
 import numpy as np
-
 # determining if there is a correlation between tiktok user age and hours spent on tiktok
+
 # sample day 1:
 user_age = np.array([18, 25, 29, 34, 38, 45, 53, 59, 64, 70, 76])
 tiktok_time = np.array([2, 1.96, 1.65, 1.54, 1.12, 0.95, 0.75, 0.36, 0.24, 0.12, 0.05])
+size = np.array([950, 750, 500, 300, 200, 100, 90, 70, 60, 50, 30])
 plt.scatter(user_age,
             tiktok_time,
-            c='red',
-            label='Day 1 Observations')
+            c='red',  # for color
+            s=size,  # s for size
+            label='Day 1 Observations',  # only use c-for color not 'color', you can also use a color array for each dot
+            alpha=0.5)  # adjust the transparency of the dots with the alpha arg, range is 0-1
 # sample day 2:
 user_age2 = np.array([18, 25, 29, 34, 38, 45, 53, 59, 64, 70, 76])
 tiktok_time2 = np.array([1.56, 1.34, 1.20, 0.95, 0.92, 0.74, 0.52, 0.36, 0.12, 0.07, 0.015])
+sizes = np.array([860, 690, 490, 300, 200, 100, 90, 70, 60, 50, 30])
 plt.scatter(user_age2,
             tiktok_time2,
             c='yellow',
-            label='Day 2 Observations')
+            s=sizes,
+            label='Day 2 Observations',
+            alpha=0.5)
 plt.xlabel('user age',
            c='blue',
            style='italic')
@@ -24,7 +29,7 @@ plt.ylabel('Daily total hours spent',
            c='blue',
            style='italic')
 plt.title('RELATIONSHIP BETWEEN TIKTOK USER AGE AND DAILY HOURS SPENT',
-          c='darkblue',
+          c='blue',
           weight='bold')
 plt.legend()
 plt.show()
