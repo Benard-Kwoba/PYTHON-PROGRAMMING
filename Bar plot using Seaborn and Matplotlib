@@ -1,0 +1,35 @@
+from matplotlib import pyplot as plt
+from numpy import random
+import seaborn as sns
+
+
+random.seed(42)  # setting random seed for reproducibility
+total_votes = 1529
+candidates = 4
+probs = [0.32, 0.59, 0.06, 0.03]  # given each individual's probability scores out of the total votes
+votes = random.multinomial(total_votes, probs)
+
+sns.set_style("dark")  # style must be one of white, dark, whitegrid, darkgrid, ticks
+candidate_colors = ["yellow", "orange", "green", "white"]
+barplot_object = sns.barplot(x=["William Ruto", "Raila Odinga", "George Wajackoyah", "David Mwaure"],
+                             y=votes,
+                             palette=candidate_colors)
+# Add data labels to the barplot
+for indices, values in enumerate(votes):
+    barplot_object.text(indices,
+                        values+5,  # values+5 means 5points above the top of the barplot, else value will touch the top
+                        str(values),
+                        ha='center',
+                        fontweight='bold',
+                        c='red')
+plt.xlabel("Candidates",
+           c='orange',
+           style='italic')
+plt.ylabel("Number of votes",
+           c='orange',
+           style='italic')
+plt.title("PRESIDENTIAL RESULTS FOR POLLING STATION X",
+          c='darkorange',
+          weight='bold')
+
+plt.show()
