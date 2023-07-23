@@ -1,6 +1,6 @@
-class BankAccount:
-    def __init__(self, account_number, balance):
-        self.account_number = account_number
+class MpesaAccount:
+    def __init__(self, phone_number, balance):
+        self.phone_number = phone_number
         self.balance = balance
 
     def check_balance(self):
@@ -33,8 +33,8 @@ _____________________________________________________________""")
 
 
 def actions():
-    # create an instance of the BankAccount class
-    account = BankAccount("28915777", balance=500.00)
+    # create an instance of the MpesaAccount class
+    account = MpesaAccount("0726743422", balance=500.00)
     menu()
     while True:
         try:
