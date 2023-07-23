@@ -1,0 +1,67 @@
+class BankAccount:
+    def __init__(self, account_number, balance):
+        self.account_number = account_number
+        self.balance = balance
+
+    def check_balance(self):
+        return f'Your MPESA Balance is:\nKshs.{round(self.balance, 2)}'
+
+    def deposit(self, amount):
+        self.balance += amount
+        balance_after_deposit = self.balance
+        return f'{amount} deposited successfully\nNEW MPESA Balance:\nKshs.{round(balance_after_deposit, 2)}'
+
+    def withdraw(self, amount):
+        if amount <= self.balance:
+            self.balance -= amount
+            return f'Kshs.{amount} successfully withdrawn\nNEW MPESA Balance:\nKshs.{round(self.balance, 2)}'
+        else:
+            return f"""
+Sorry, you have insufficient balance to withdraw: Kshs.{round(amount, 2)}\nMPESA Balance:\nKshs.{self.balance}
+"""
+
+
+def menu():
+    print(f"""
+______________________WELCOME TO MPESA_______________________
+
+0 - To Check MPESA Balance
+1 - To Deposit into MPESA
+2 - To Withdraw from MPESA
+3 - To Exit
+_____________________________________________________________""")
+
+
+def actions():
+    # create an instance of the BankAccount class
+    account = BankAccount("28915777", balance=500.00)
+    menu()
+    while True:
+        try:
+            customer_input = input('Enter Selection\n: ')
+            if customer_input == str(0):
+                print(account.check_balance())
+                menu()
+            elif customer_input == str(1):
+                amount_to_deposit = float(input('Enter amount to deposit\n: '))
+                print(account.deposit(amount_to_deposit))
+                menu()
+            elif customer_input == str(2):
+                amount_to_withdraw = float(input('Enter amount to withdraw\n: '))
+                print(account.withdraw(amount_to_withdraw))
+                menu()
+            elif customer_input == str(3):
+                print('Thank you for using MPESA')
+                break
+            else:
+                print('Invalid Selection')
+                menu()
+        except ValueError:
+            print('Invalid Entry')
+            menu()
+
+
+actions()
+
+
+
