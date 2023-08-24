@@ -1,6 +1,7 @@
 from datetime import datetime
 date_and_time = datetime.now()
 
+
 def coop_bank_conversions(user_balance):
     date = date_and_time
     usd_in_kshs = 0.0069
@@ -45,4 +46,6 @@ Transaction Date and Time:
 {date_and_time}
                             Thank you for banking with us.
 ______________________________________________________________________________________________"""
-print(coop_bank_conversions(float(input('Enter amount in Kshs to conver to USD: '))))
+
+
+print(coop_bank_conversions(float(input('Enter amount in Kshs to convert to USD: '))))
