@@ -1,0 +1,48 @@
+from datetime import datetime
+date_and_time = datetime.now()
+
+def coop_bank_conversions(user_balance):
+    date = date_and_time
+    usd_in_kshs = 0.0069
+    bank_conversion_rate = 0.043
+
+    def usd_kshs_conversion(available_balance_in_kshs):
+        nonlocal  bank_conversion_rate
+        nonlocal date
+        nonlocal usd_in_kshs
+        converted_amount = float(available_balance_in_kshs * usd_in_kshs)
+        user_selection = input(f"""
+_________________________________COOP-BANK: KSHS-USD TRANSACTION STATEMENT_____________________
+Date: {date}
+Amount to convert: {round(available_balance_in_kshs,2)}Kshs
+Amount in USD before conversion fee: {round(converted_amount,2)}USD
+Coop-Bank USD-KSHS conversion rate: {bank_conversion_rate}
+REPLY WITH:
+        1 - To proceed with conversion
+        0 - To exit
+______________________________________________________________________________________________\n: """)
+        if user_selection == "1":
+            return converted_amount
+        elif user_selection == "0":
+            print("Cancelling conversion process...")
+            return None
+        else:
+            print("Invalid input. You did not enter '1' to proceed or '0' to exit.")
+            return None
+
+    user_input = usd_kshs_conversion(user_balance)
+    if user_input is None:
+        return "Conversion process cancelled.\nThank you for banking with us"
+
+    bank_conversion_fee_in_kshs = bank_conversion_rate * user_input
+    amount_after_bank_rate = user_input - bank_conversion_fee_in_kshs
+    return f"""
+_________________________________COOP-BANK: ACKNOWLEDGEMENT OF CONVERSION_____________________
+You have successfully converted {round(user_balance,2)}Kshs to USD
+Your account balance in USD:
+{round(amount_after_bank_rate,2)}USD
+Transaction Date and Time:
+{date_and_time}
+                            Thank you for banking with us.
+______________________________________________________________________________________________"""
+print(coop_bank_conversions(float(input('Enter amount in Kshs to conver to USD: '))))
