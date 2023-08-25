@@ -1,5 +1,7 @@
 from datetime import datetime
 date_and_time = datetime.now()
+from time import sleep
+
 
 
 def coop_bank_conversions(user_balance):
@@ -25,7 +27,8 @@ ________________________________________________________________________________
         if user_selection == "1":
             return converted_amount
         elif user_selection == "0":
-            print("Cancelling conversion process...")
+            print("Cancelling conversion process...\n")
+            sleep(3)
             return None
         else:
             print("Invalid input. You did not enter '1' to proceed or '0' to exit.")
@@ -48,4 +51,9 @@ Transaction Date and Time:
 ______________________________________________________________________________________________"""
 
 
-print(coop_bank_conversions(float(input('Enter amount in Kshs to convert to USD: '))))
+try:
+    print(coop_bank_conversions(float(input('Enter amount in Kshs to convert to USD: '))))
+except Exception:
+    print(f'Only numbers allowed.\n\nTerminating conversion...')
+    sleep(3)
+    print('Conversion Terminated')
