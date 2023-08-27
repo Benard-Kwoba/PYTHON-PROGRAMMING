@@ -1,3 +1,5 @@
+import re
+
 movies_library = {
     "hindi": {
         "thriller": {
@@ -20,7 +22,6 @@ movies_library = {
     },
     "martial arts": {"chinese": "IP Man",
                      "mandarin": "Raid"}
-
 }
 
 
@@ -31,21 +32,27 @@ def search_movie(category_dict, movie_title):
             if result:
                 return result
         else:
-            if movies == movie_title:
+            # you can use: if re.search(re.escape(movie_title), movies, re.IGNORECASE):
+            if re.search(rf"\b{re.escape(movie_title)}\b", movies, re.IGNORECASE):
                 return category
-    return None
+    return None  # a "default" return value that signals the absence of a match.
 
 
 def main():
     movie_to_find = input(f"""
 _____________________________MOVIES LIBRARY SEARCH_____________________________
-Enter Movie Name: """)
+Enter Movie Name: """).strip()  # Remove leading/trailing whitespace
+
+    if not movie_to_find:
+        print("Please provide a valid movie name.")
+        return  # prevent further execution of the code
+
     found_category = search_movie(movies_library, movie_to_find)
 
     if found_category:
-        print(f"{movie_to_find}' found in the '{found_category}' movies_category.")
+        print(f"'{movie_to_find}' found in the '{found_category}' movies category.")
     else:
-        print(f"Movie '{movie_to_find}' not found in the movies_library.")
+        print(f"Movie '{movie_to_find}' not found in the movies library.")
 
 
 if __name__ == "__main__":
