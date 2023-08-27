@@ -1,0 +1,52 @@
+movies_library = {
+    "hindi": {
+        "thriller": {
+            "south-indian": "KGF",
+            "bollywood": "Pathaan"
+        },
+        "drama": {
+            "bollywood": "Drishyam",
+            "south-indian": "Baahubali"
+        }
+    },
+    "hollywood": {
+        "sci-fy": {
+            "Ryan Coogler": "Black Panther",
+            "Chad Stahelski": "John Wick"
+        },
+        "sports": {
+            "Ryan Coogler": "Creed"
+        }
+    },
+    "martial arts": {"chinese": "IP Man",
+                     "mandarin": "Raid"}
+
+}
+
+
+def search_movie(category_dict, movie_title):
+    for category, movies in category_dict.items():
+        if isinstance(movies, dict):
+            result = search_movie(movies, movie_title)
+            if result:
+                return result
+        else:
+            if movies == movie_title:
+                return category
+    return None
+
+
+def main():
+    movie_to_find = input(f"""
+_____________________________MOVIES LIBRARY SEARCH_____________________________
+Enter Movie Name: """)
+    found_category = search_movie(movies_library, movie_to_find)
+
+    if found_category:
+        print(f"{movie_to_find}' found in the '{found_category}' movies_category.")
+    else:
+        print(f"Movie '{movie_to_find}' not found in the movies_library.")
+
+
+if __name__ == "__main__":
+    main()
