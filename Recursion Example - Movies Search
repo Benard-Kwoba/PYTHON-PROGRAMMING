@@ -31,7 +31,7 @@ movies_library = {
 def search_movie(category_dict, movie_title):
     for category, movies in category_dict.items():
         if isinstance(movies, dict):
-            result = search_movie(movies, movie_title)
+            result = search_movie(movies, movie_title)  # recursive call
             if result:
                 return result
         else:
