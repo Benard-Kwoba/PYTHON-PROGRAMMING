@@ -1,0 +1,107 @@
+from tkinter import *  # importing everything
+from datetime import datetime
+# no need to import sleep since we will use root.after(ms, func) function
+
+date_and_time = datetime.now()
+
+
+def show_conversion_terminated():
+    result_label.config(text="Conversion Terminated")
+    root.after(2000, root.destroy)  # Close the window after 2 seconds
+
+
+def cancel_conversion():
+    result_label.config(text="Conversion Cancelled")
+    root.after(2000, show_conversion_terminated)
+
+
+def convert():
+    try:
+        user_balance = float(amount_entry.get())  # gets the amount entered by the user in the GUI
+
+        if user_balance < 0:
+            result_label.config(text="Negative value entered\n\nTerminating Conversion...")
+            # calling after() - to schedule the execution of a function after a specified time delay(in ms)
+            root.after(2000, show_conversion_terminated)
+            return
+
+    except ValueError:
+        result_label.config(text="Only numbers allowed!!!\n\nTerminating Conversion...")
+        root.after(2000, show_conversion_terminated)
+        return
+
+    usd_in_kshs = 0.0069
+    bank_conversion_rate = 0.043  # bank conversion fee = 1 USD at 0.043USD
+
+    converted_amount = user_balance * usd_in_kshs  # converted_amount in USD
+
+    result_text = f"""
+        ___________________________________________________________________________
+        COOP-BANK: CONVERSION SUMMARY
+        Date: {date_and_time}
+        Amount to convert: {round(user_balance, 2)} Kshs
+        Amount in USD before conversion fee: {round(converted_amount, 2)} USD
+        Coop-Bank USD conversion rate: {bank_conversion_rate}
+        ___________________________________________________________________________
+        """
+
+    # Handle USD conversion
+    bank_conversion_fee_in_usd = bank_conversion_rate * converted_amount
+    amount_after_bank_rate = converted_amount - bank_conversion_fee_in_usd
+
+    result_text += f"""
+        \t\t\tConversion Successful!\n
+        Your account balance in USD:
+        {round(amount_after_bank_rate, 2)} USD
+        Transaction Date and Time:
+        {date_and_time}
+        
+        Thank you for banking with us.
+        ___________________________________________________________________________
+        """
+
+    result_label.config(text=result_text)
+
+
+#_______________________________________________________GUI CONFIGURATION_______________________________________________
+# Main GUI window
+root = Tk()
+root.title("COOP-BANK KSH-USD CONVERSION")
+
+# adding widgets, labels and fixed grid:
+amount_label = Label(root, text="Enter amount in Kshs to convert to USD:")
+amount_label.grid(row=0, column=0, columnspan=5)
+
+amount_entry = Entry(root)
+amount_entry.grid(row=1, column=0, columnspan=2)
+
+convert_button = Button(root, text="Convert", command=convert)
+convert_button.grid(row=2, column=0)
+
+cancel_button = Button(root, text="Cancel", command=cancel_conversion)
+cancel_button.grid(row=2, column=1)
+
+result_label = Label(root, text="", justify=LEFT)
+result_label.grid(row=3, column=0, columnspan=2)
+
+"""
+#ALTERNATIVE CODE FOR BASIC PACK()
+# pack() - used to organize and arrange widgets within a container (typically a frame or the main window)
+# pack is flexible but not good for complext GUI designs
+
+amount_label = Label(root, text="Enter amount in Kshs to convert to USD:")
+amount_label.pack() 
+
+amount_entry = Entry(root)
+amount_entry.pack()
+
+convert_button = Button(root, text="Convert", command=convert)
+convert_button.pack(side="left")
+
+cancel_button = Button(root, text="Cancel", command=cancel_conversion)
+cancel_button.pack(side="right")
+
+result_label = Label(root, text="", justify=LEFT)  # contents of the result to appear on the left
+result_label.pack()
+"""
+root.mainloop()
