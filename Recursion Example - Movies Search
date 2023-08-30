@@ -6,7 +6,7 @@ import json
 movies_library = {
     "hindi": {
         "thriller": {
-            "south-indian": ["KGF", "RRR", "Janatha Garage"],
+            "south-indian": ["KGF", "RRR", "Janatha Garage", "Jailer"],
             "bollywood": "Pathaan"
         },
         "drama": {
