@@ -1,5 +1,6 @@
 from tkinter import *  # importing everything
 from datetime import datetime
+
 # no need to import sleep since we will use root.after(ms, func) function
 
 date_and_time = datetime.now()
@@ -20,13 +21,13 @@ def convert():
         user_balance = float(amount_entry.get())  # gets the amount entered by the user in the GUI
 
         if user_balance < 0:
-            result_label.config(text="Negative value entered\n\nTerminating Conversion...")
+            result_label.config(text="Negative Value Entered\n\nTerminating Conversion...")
             # calling after() - to schedule the execution of a function after a specified time delay(in ms)
             root.after(2000, show_conversion_terminated)
             return
 
     except ValueError:
-        result_label.config(text="Only numbers allowed!!!\n\nTerminating Conversion...")
+        result_label.config(text="Only Numbers Allowed!!!\n\nTerminating Conversion...")
         root.after(2000, show_conversion_terminated)
         return
 
@@ -55,7 +56,7 @@ def convert():
         {round(amount_after_bank_rate, 2)} USD
         Transaction Date and Time:
         {date_and_time}
-        
+
         Thank you for banking with us.
         ___________________________________________________________________________
         """
@@ -63,22 +64,35 @@ def convert():
     result_label.config(text=result_text)
 
 
-#_______________________________________________________GUI CONFIGURATION_______________________________________________
+# _______________________________________________________GUI CONFIGURATION_______________________________________________
 # Main GUI window
 root = Tk()
 root.title("COOP-BANK KSH-USD CONVERSION")
 
+
 # adding widgets, labels and fixed grid:
-amount_label = Label(root, text="Enter amount in Kshs to convert to USD:")
+amount_label = Label(root, text="Enter Amount in Kshs to Convert to USD:")
 amount_label.grid(row=0, column=0, columnspan=5)
 
 amount_entry = Entry(root)
 amount_entry.grid(row=1, column=0, columnspan=2)
 
-convert_button = Button(root, text="Convert", command=convert)
+convert_img = PhotoImage(file="tk_convert_button.PNG")  # have this file in your python directory
+convert_image = convert_img.subsample(int(convert_img.width() / 35), int(convert_img.height() / 9))  # resizing image
+convert_button = Button(root, command=convert, text="Convert", bg="cyan", activebackground="green" ,
+                        fg="black",
+                        activeforeground='orange',
+                        relief="ridge",  # must be flat, groove, raised, ridge, solid, or sunken
+                        image=convert_image  # we will use image, don't add image if you want text
+                        )
 convert_button.grid(row=2, column=0)
 
-cancel_button = Button(root, text="Cancel", command=cancel_conversion)
+cancel_img = PhotoImage(file="tk_cancel_button.PNG")  # loading image
+cancel_image = cancel_img.subsample(int(cancel_img.width() / 30), int(cancel_img.height() / 11))  # resizing image
+cancel_button = Button(root, command=cancel_conversion, text="Cancel", bg="yellow", activebackground="red",
+                       fg="black",
+                       activeforeground='white',  # you can add padx=2, height=1
+                       image=cancel_image)
 cancel_button.grid(row=2, column=1)
 
 result_label = Label(root, text="", justify=LEFT)
