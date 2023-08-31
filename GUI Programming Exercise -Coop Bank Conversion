@@ -1,11 +1,10 @@
-from tkinter import *  # importing everything
+from tkinter import *  # importing classes, funcs and constants not submodules e.g ttk
+from tkinter import ttk
 from datetime import datetime
-
-# no need to import sleep since we will use root.after(ms, func) function
 
 date_and_time = datetime.now()
 
-
+# _______________________________________adding functions________________________________________________
 def show_conversion_terminated():
     result_label.config(text="Conversion Terminated")
     root.after(2000, root.destroy)  # Close the window after 2 seconds
@@ -63,15 +62,31 @@ def convert():
 
     result_label.config(text=result_text)
 
+# adding button hover functions
+def on_convert_hover(event):
+    convert_button.config(cursor="hand2")
 
-# _______________________________________________________GUI CONFIGURATION_______________________________________________
-# Main GUI window
+def on_convert_leave(event):
+    convert_button.config(cursor="")
+
+def on_cancel_hover(event):
+    cancel_button.config(cursor="hand2")
+
+def on_cancel_leave(event):
+    cancel_button.config(cursor="")
+
+
+
+# _______________________________________________________GUI CONFIGURATION______________________________________________
+# __________________________Main GUI window___________________________________
 root = Tk()
 root.title("COOP-BANK KSH-USD CONVERSION")
+# _____________________________________________________________________________
 
 
 # adding widgets, labels and fixed grid:
-amount_label = Label(root, text="Enter Amount in Kshs to Convert to USD:")
+amount_label = Label(root, text="Enter Amount in Kshs to Convert to USD:", fg="white", bg='black',relief="ridge",
+                     font=("Helvetica", 9, "bold"))
 amount_label.grid(row=0, column=0, columnspan=5)
 
 amount_entry = Entry(root)
@@ -95,9 +110,18 @@ cancel_button = Button(root, command=cancel_conversion, text="Cancel", bg="yello
                        image=cancel_image)
 cancel_button.grid(row=2, column=1)
 
+# Bind hover and leave events for Convert and Cancel buttons
+convert_button.bind("<Enter>", on_convert_hover)  # The "Enter" and "Leave" events are mouse-related events in Tkinter
+convert_button.bind("<Leave>", on_convert_leave)
+
+cancel_button.bind("<Enter>", on_cancel_hover)
+cancel_button.bind("<Leave>", on_cancel_leave)
+
+
 result_label = Label(root, text="", justify=LEFT)
 result_label.grid(row=3, column=0, columnspan=2)
 
+# ______________________________________________________________________________________________________________________
 """
 #ALTERNATIVE CODE FOR BASIC PACK()
 # pack() - used to organize and arrange widgets within a container (typically a frame or the main window)
