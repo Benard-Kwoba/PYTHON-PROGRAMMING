@@ -1,10 +1,56 @@
 from tkinter import *  # importing classes, funcs and constants not submodules e.g ttk
 from tkinter import ttk
 from datetime import datetime
+import json  # to store and access user account balance.
 
 date_and_time = datetime.now()
 
+# Initialize kshs_account_balance with a default value for json logic
+kshs_account_balance = 0
+account_number = ""
+usd_account_balance = 0
+
+# Load Balances from JSON Files when Starting:
+try:
+    with open("Coop_Bank_Balances.json", "r") as json_file:
+        data = json.load(json_file)
+        kshs_account_balance = data.get("01108450200170", kshs_account_balance)  # fallback value if a/c no. is missing
+    with open("Coop_Bank_USD_Balances.json", "r") as usd_json_file:
+        data_usd = json.load(usd_json_file)
+        usd_account_balance = data.get("01108450200170", usd_account_balance)  # fallback value if a/c no. is missing
+except FileNotFoundError:
+    pass  # JSON file doesn't exist, use the default balance
+
+
+
+
 # _______________________________________adding app functions________________________________________________
+def load_balance():
+    global kshs_account_balance
+    global account_number
+    try:
+        account_number = account_entry.get()  # Get the user's account number from the Entry widget
+        with open("Coop_Bank_Balances.json", "r") as json_file:
+            data = json.load(json_file)
+            kshs_account_balance = data.get(account_number, kshs_account_balance)  # Fallback value if the account number is missing
+    except FileNotFoundError:
+        pass  # JSON file doesn't exist, use the default balance
+
+def show_usd_balance():
+    global account_number
+    global usd_account_balance
+    try:
+        account_number = account_entry.get()
+        with open("Coop_Bank_USD_Balances.json", "r") as usd_json_file:
+            data_usd = json.load(usd_json_file)
+            usd_account_balance = data_usd.get(account_number,
+                                            usd_account_balance)
+        show_usd_balance_label.config(text=f"Your USD Balance is:\n{usd_account_balance}")
+        root.after(2000, root.destroy)  # Close the window after 2 seconds
+    except FileNotFoundError:
+        pass  # JSON file doesn't exist, use the default balance
+
+
 def show_conversion_terminated():
     result_label.config(text="Conversion Terminated")
     root.after(2000, root.destroy)  # Close the window after 2 seconds
@@ -16,51 +62,68 @@ def cancel_conversion():
 
 
 def convert():
+    global kshs_account_balance
+    global  usd_account_balance
     try:
-        user_balance = float(amount_entry.get())  # gets the amount entered by the user in the GUI
+        user_convert_amount = float(amount_entry.get())  # gets the amount entered by the user in the GUI
 
-        if user_balance < 0:
+        if user_convert_amount < 0:
+            # Handle negative input
             result_label.config(text="Negative Value Entered\n\nTerminating Conversion...")
             # calling after() - to schedule the execution of a function after a specified time delay(in ms)
             root.after(2000, show_conversion_terminated)
             return
+        if user_convert_amount > kshs_account_balance:
+            # Handle insufficient balance
+            result_label.config(text=f"Insufficient Balance\nYour balance is: Kshs.{kshs_account_balance}\n\nTerminating Conversion...")
+            root.after(2000, show_conversion_terminated)
+            return
+
+        usd_in_kshs = 0.0069
+        bank_conversion_rate = 0.043  # bank conversion fee = 1 USD at 0.043USD
+
+        converted_amount = user_convert_amount * usd_in_kshs  # converted_amount in USD
+
+        result_text = f"""
+            ___________________________________________________________________________
+            COOP-BANK: CONVERSION SUMMARY
+            Date: {date_and_time}
+            Amount to convert: {round(user_convert_amount, 2)} Kshs
+            Amount in USD before conversion fee: {round(converted_amount, 2)} USD
+            Coop-Bank USD conversion rate: {bank_conversion_rate}
+            ___________________________________________________________________________
+            """
+
+        # Handle USD conversion
+        bank_conversion_fee_in_usd = bank_conversion_rate * converted_amount
+        amount_after_bank_rate = converted_amount - bank_conversion_fee_in_usd
+
+        result_text += f"""
+            \t\t\tConversion Successful!\n
+            Your account balance in USD:
+            {round(amount_after_bank_rate, 2)} USD
+            Transaction Date and Time:
+            {date_and_time}
+    
+            Thank you for banking with us.
+            ___________________________________________________________________________
+            """
+
+        result_label.config(text=result_text)
+        kshs_account_balance -= converted_amount/usd_in_kshs
+        usd_account_balance += amount_after_bank_rate
+
+        # Save the kshs_account_balance to a JSON file
+        with open("Coop_Bank_Balances.json", "w") as json_file:
+            json.dump({account_number: kshs_account_balance}, json_file)
+
+        with open("Coop_Bank_USD_Balances.json", "w") as json_file:
+            json.dump({account_number: usd_account_balance}, json_file)
 
     except ValueError:
         result_label.config(text="Only Numbers Allowed!!!\n\nTerminating Conversion...")
         root.after(2000, show_conversion_terminated)
         return
-
-    usd_in_kshs = 0.0069
-    bank_conversion_rate = 0.043  # bank conversion fee = 1 USD at 0.043USD
-
-    converted_amount = user_balance * usd_in_kshs  # converted_amount in USD
-
-    result_text = f"""
-        ___________________________________________________________________________
-        COOP-BANK: CONVERSION SUMMARY
-        Date: {date_and_time}
-        Amount to convert: {round(user_balance, 2)} Kshs
-        Amount in USD before conversion fee: {round(converted_amount, 2)} USD
-        Coop-Bank USD conversion rate: {bank_conversion_rate}
-        ___________________________________________________________________________
-        """
-
-    # Handle USD conversion
-    bank_conversion_fee_in_usd = bank_conversion_rate * converted_amount
-    amount_after_bank_rate = converted_amount - bank_conversion_fee_in_usd
-
-    result_text += f"""
-        \t\t\tConversion Successful!\n
-        Your account balance in USD:
-        {round(amount_after_bank_rate, 2)} USD
-        Transaction Date and Time:
-        {date_and_time}
-
-        Thank you for banking with us.
-        ___________________________________________________________________________
-        """
-
-    result_label.config(text=result_text)
 
 # adding button hover functions
 def on_convert_hover(event):
@@ -138,6 +201,29 @@ cancel_button.bind("<Leave>", on_cancel_leave)
 
 result_label = Label(root, text="", justify=LEFT)
 result_label.grid(row=3, column=0, columnspan=2)
+
+# ______________________usd account balance enquiry__________________
+balance_check_label = Label(root, text="MY USD WALLET", fg="white", bg='black',relief="ridge",
+                     font=("Helvetica", 9, "bold"))
+balance_check_label.grid(row=4, column=0, columnspan=5)
+
+account_label = Label(root, text="Enter Account Number:")
+account_label.grid(row=5, column=0)
+
+account_entry = Entry(root, bd=3)  # bd=borderwidth
+account_entry.grid(row=5, column=1)
+
+account_pw_label = Label(root, text="Enter Password:")
+account_pw_label.grid(row=6, column=0)
+
+account_pw_entry = Entry(root, bd=3, show="*")  # bd=borderwidth
+account_pw_entry.grid(row=6, column=1)
+
+show_usd_balance_button = Button(root, text="Load Balance", command=show_usd_balance, background='green')
+show_usd_balance_button.grid(row=7, column=1)
+
+show_usd_balance_label = Label(root, text="Your USD A/C Balance:")
+show_usd_balance_label.grid(row=8, column=0)
 
 # ______________________________________________________________________________________________________________________
 """
