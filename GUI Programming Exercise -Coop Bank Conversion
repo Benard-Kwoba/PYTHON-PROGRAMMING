@@ -1,11 +1,10 @@
 from tkinter import *  # importing classes, funcs and constants not submodules e.g ttk
-from tkinter import ttk
 from datetime import datetime
 import json  # to store and access user account balance.
 
 date_and_time = datetime.now()
 
-# Initialize kshs_account_balance with a default value for json logic
+# Initialize coop_bank_account_balance with a default value for json logic
 kshs_account_balance = 0
 account_number = ""
 usd_account_balance = 0
@@ -14,38 +13,43 @@ usd_account_balance = 0
 try:
     with open("Coop_Bank_Balances.json", "r") as json_file:
         data = json.load(json_file)
-        kshs_account_balance = data.get("01108450200170", kshs_account_balance)  # fallback value if a/c no. is missing
-    with open("Coop_Bank_USD_Balances.json", "r") as usd_json_file:
-        data_usd = json.load(usd_json_file)
-        usd_account_balance = data.get("01108450200170", usd_account_balance)  # fallback value if a/c no. is missing
+        account_info = data.get("accounts", {}).get(account_number, None)
+        if account_info:
+            if account_info["account_type"] == "ksh_account":
+                kshs_account_balance = account_info.get("account_balance", None)
+            elif account_info["account_type"] == "usd_account":
+                usd_account_balance = account_info.get("account_balance", None)
 except FileNotFoundError:
     pass  # JSON file doesn't exist, use the default balance
 
 
-
-
 # _______________________________________adding app functions________________________________________________
-def load_balance():
+def load_ksh_balance():
     global kshs_account_balance
-    global account_number
-    try:
-        account_number = account_entry.get()  # Get the user's account number from the Entry widget
-        with open("Coop_Bank_Balances.json", "r") as json_file:
-            data = json.load(json_file)
-            kshs_account_balance = data.get(account_number, kshs_account_balance)  # Fallback value if the account number is missing
-    except FileNotFoundError:
-        pass  # JSON file doesn't exist, use the default balance
-
-def show_usd_balance():
     global account_number
     global usd_account_balance
     try:
-        account_number = account_entry.get()
-        with open("Coop_Bank_USD_Balances.json", "r") as usd_json_file:
-            data_usd = json.load(usd_json_file)
-            usd_account_balance = data_usd.get(account_number,
-                                            usd_account_balance)
-        show_usd_balance_label.config(text=f"Your USD Balance is:\n{usd_account_balance}")
+        account_number = account_entry.get()  # Get the user's account number from the Entry widget
+        with open("Coop_Bank_Balances.json", "r") as account_file:
+            data = json.load(account_file)
+            account_info = data.get("accounts", {}).get(account_number, None)
+            if account_info:
+                if account_info["account_type"] == "ksh_account":
+                    kshs_account_balance = account_info.get("account_balance", None)
+                elif account_info["account_type"] == "usd_account":
+                    usd_account_balance = account_info.get("account_balance", None)
+    except FileNotFoundError:
+        pass  # JSON file doesn't exist, use the default balance
+
+
+def show_usd_balance():
+    global usd_account_balance
+    global account_number
+    try:
+        if usd_account_balance is not None:
+            show_usd_balance_label.config(text=f"Your USD Balance is:\n{usd_account_balance}")
+        else:
+            show_usd_balance_label.config(text="USD Account not found")
         root.after(2000, root.destroy)  # Close the window after 2 seconds
     except FileNotFoundError:
         pass  # JSON file doesn't exist, use the default balance
@@ -63,7 +67,7 @@ def cancel_conversion():
 
 def convert():
     global kshs_account_balance
-    global  usd_account_balance
+    global usd_account_balance
     try:
         user_convert_amount = float(amount_entry.get())  # gets the amount entered by the user in the GUI
 
@@ -75,7 +79,8 @@ def convert():
             return
         if user_convert_amount > kshs_account_balance:
             # Handle insufficient balance
-            result_label.config(text=f"Insufficient Balance\nYour balance is: Kshs.{kshs_account_balance}\n\nTerminating Conversion...")
+            result_label.config(
+                text=f"Insufficient Balance\nYour balance is: Kshs.{kshs_account_balance}\n\nTerminating Conversion...")
             root.after(2000, show_conversion_terminated)
             return
 
@@ -104,40 +109,49 @@ def convert():
             {round(amount_after_bank_rate, 2)} USD
             Transaction Date and Time:
             {date_and_time}
-    
+
             Thank you for banking with us.
             ___________________________________________________________________________
             """
 
         result_label.config(text=result_text)
-        kshs_account_balance -= converted_amount/usd_in_kshs
+        kshs_account_balance -= converted_amount / usd_in_kshs
         usd_account_balance += amount_after_bank_rate
 
         # Save the kshs_account_balance to a JSON file
-        with open("Coop_Bank_Balances.json", "w") as json_file:
-            json.dump({account_number: kshs_account_balance}, json_file)
+        with open("Coop_Bank_Balances.json", "w") as final_json_file:
+            data_final = json.load(final_json_file)
+            if "ksh_account" in data_final:
+                data_final["ksh_account"]["account_number"]["account_balance"] = kshs_account_balance
 
-        with open("Coop_Bank_USD_Balances.json", "w") as json_file:
-            json.dump({account_number: usd_account_balance}, json_file)
+            if "usd_account" in data_final:
+                data_final["usd_account"]["account_number"]["account_balance"] = usd_account_balance
+
+            # Save the updated data back to the JSON file
+            with open("Coop_Bank_Balances.json", "w") as update_json_file:
+                json.dump(data, update_json_file, indent=4)  # Use indent for pretty formatting (optional)
 
     except ValueError:
         result_label.config(text="Only Numbers Allowed!!!\n\nTerminating Conversion...")
         root.after(2000, show_conversion_terminated)
         return
 
+
 # adding button hover functions
 def on_convert_hover(event):
     convert_button.config(cursor="hand2")
 
+
 def on_convert_leave(event):
     convert_button.config(cursor="")
+
 
 def on_cancel_hover(event):
     cancel_button.config(cursor="hand2")
 
+
 def on_cancel_leave(event):
     cancel_button.config(cursor="")
-
 
 
 # _______________________________________________________GUI CONFIGURATION______________________________________________
@@ -148,7 +162,7 @@ root.title("COOP-BANK KSH-USD CONVERSION")
 
 
 # adding widgets, labels and fixed grid:
-amount_label = Label(root, text="Enter Amount in Kshs to Convert to USD:", fg="white", bg='black',relief="ridge",
+amount_label = Label(root, text="Enter Amount in Kshs to Convert to USD:", fg="white", bg='black', relief="ridge",
                      font=("Helvetica", 9, "bold"))
 amount_label.grid(row=0, column=0, columnspan=5)
 
@@ -157,25 +171,25 @@ amount_entry = Entry(root, bg='#B19CD9', bd=3, relief="groove", fg='white', sele
 amount_entry.grid(row=1, column=0, columnspan=2)
 
 # ________conversion menubutton__________
-mb=  Menubutton( root, text="USD-KSH", relief=GROOVE, background="black", foreground='yellow',
-                 font=("Helvetica", 9, "bold"))
+mb = Menubutton(root, text="USD-KSH", relief=GROOVE, background="black", foreground='yellow',
+                font=("Helvetica", 9, "bold"))
 mb.grid()
-mb.menu =  Menu ( mb, tearoff = 0 )
-mb["menu"] =  mb.menu
+mb.menu = Menu(mb, tearoff=0)
+mb["menu"] = mb.menu
 
-badilisha= IntVar()
+badilisha = IntVar()
 standard = IntVar()
 
-mb.menu.add_checkbutton ( label="Badilisha Promo",
-                          variable=badilisha, background='#B19CD9' )
-mb.menu.add_checkbutton ( label="Standard Conversion", background='green',
-                          variable=standard )
+mb.menu.add_checkbutton(label="Badilisha Promo",
+                        variable=badilisha, background='#B19CD9')
+mb.menu.add_checkbutton(label="Standard Conversion", background='green',
+                        variable=standard)
 
 mb.grid(row=1, column=9)
 # ________________________________________________
 convert_img = PhotoImage(file="tk_convert_button.PNG")  # have this file in your python directory
 convert_image = convert_img.subsample(int(convert_img.width() / 35), int(convert_img.height() / 9))  # resizing image
-convert_button = Button(root, command=convert, text="Convert", bg="cyan", activebackground="green" ,
+convert_button = Button(root, command=convert, text="Convert", bg="cyan", activebackground="green",
                         fg="black",
                         activeforeground='orange',
                         relief="ridge",  # must be flat, groove, raised, ridge, solid, or sunken
@@ -198,13 +212,12 @@ convert_button.bind("<Leave>", on_convert_leave)
 cancel_button.bind("<Enter>", on_cancel_hover)
 cancel_button.bind("<Leave>", on_cancel_leave)
 
-
 result_label = Label(root, text="", justify=LEFT)
 result_label.grid(row=3, column=0, columnspan=2)
 
 # ______________________usd account balance enquiry__________________
-balance_check_label = Label(root, text="MY USD WALLET", fg="white", bg='black',relief="ridge",
-                     font=("Helvetica", 9, "bold"))
+balance_check_label = Label(root, text="MY USD WALLET", fg="white", bg='black', relief="ridge",
+                            font=("Helvetica", 9, "bold"))
 balance_check_label.grid(row=4, column=0, columnspan=5)
 
 account_label = Label(root, text="Enter Account Number:")
