@@ -4,7 +4,7 @@ from datetime import datetime
 
 date_and_time = datetime.now()
 
-# _______________________________________adding functions________________________________________________
+# _______________________________________adding app functions________________________________________________
 def show_conversion_terminated():
     result_label.config(text="Conversion Terminated")
     root.after(2000, root.destroy)  # Close the window after 2 seconds
@@ -89,9 +89,27 @@ amount_label = Label(root, text="Enter Amount in Kshs to Convert to USD:", fg="w
                      font=("Helvetica", 9, "bold"))
 amount_label.grid(row=0, column=0, columnspan=5)
 
-amount_entry = Entry(root)
+amount_entry = Entry(root, bg='#B19CD9', bd=3, relief="groove", fg='white', selectbackground='magenta',
+                     state=NORMAL)
 amount_entry.grid(row=1, column=0, columnspan=2)
 
+# ________conversion menubutton__________
+mb=  Menubutton( root, text="USD-KSH", relief=GROOVE, background="black", foreground='yellow',
+                 font=("Helvetica", 9, "bold"))
+mb.grid()
+mb.menu =  Menu ( mb, tearoff = 0 )
+mb["menu"] =  mb.menu
+
+badilisha= IntVar()
+standard = IntVar()
+
+mb.menu.add_checkbutton ( label="Badilisha Promo",
+                          variable=badilisha, background='#B19CD9' )
+mb.menu.add_checkbutton ( label="Standard Conversion", background='green',
+                          variable=standard )
+
+mb.grid(row=1, column=9)
+# ________________________________________________
 convert_img = PhotoImage(file="tk_convert_button.PNG")  # have this file in your python directory
 convert_image = convert_img.subsample(int(convert_img.width() / 35), int(convert_img.height() / 9))  # resizing image
 convert_button = Button(root, command=convert, text="Convert", bg="cyan", activebackground="green" ,
