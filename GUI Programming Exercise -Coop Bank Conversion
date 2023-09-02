@@ -260,3 +260,254 @@ result_label = Label(root, text="", justify=LEFT)  # contents of the result to a
 result_label.pack()
 """
 root.mainloop()
+
+
+
+# ________________________________________________--EXERCISE CODE--____________________________-
+from tkinter import *  # importing classes, funcs and constants not submodules e.g ttk
+from datetime import datetime
+import json  # to store and access user account balance.
+
+date_and_time = datetime.now()
+
+# Initialize coop_bank_account_balance with a default value for json logic
+kshs_account_number = ""
+kshs_account_balance = 0
+dollar_account_number = ""
+dollar_account_balance = 0
+
+
+
+
+def load_account_logins():
+    global kshs_account_number
+    global kshs_account_balance
+    global dollar_account_number
+    global dollar_account_balance
+    try:
+        kshs_account_number = kshs_account_entry.get()  # Get the user's account number from the Entry widget
+        kshs_account_pw = kshs_pw_entry.get()
+        dollar_account_number = dollar_account_entry.get()
+        dollar_account_pw = dollar_pw_entry.get()
+
+        with open("Coop_Bank_Balances.json", "r") as account_file:
+            data = json.load(account_file)
+            kshs_account_info = data.get("ksh_account", {}).get(kshs_account_number, None)
+            dollar_account_info = data.get("usd_account", {}).get(dollar_account_number, None)
+            if kshs_account_info["account_pin"] == kshs_account_pw or dollar_account_info["account_pin"] == dollar_account_pw:
+                root.destroy()
+
+                def show_usd_conversion_terminated():
+                    kshs_usd_result_label.config(text="Conversion Terminated")
+                    kshs_usd_root.after(2000, root.destroy)  # Close the window after 2 seconds
+
+                def cancel_usd_conversion():
+                    kshs_usd_result_label.config(text="Conversion Cancelled")
+                    kshs_usd_root.after(2000, show_usd_conversion_terminated)
+
+                # adding button hover functions
+                def on_convert_hover(event):
+                    convert_button.config(cursor="hand2")
+
+                def on_convert_leave(event):
+                    convert_button.config(cursor="")
+
+                def on_cancel_hover(event):
+                    cancel_button.config(cursor="hand2")
+
+                def on_cancel_leave(event):
+                    cancel_button.config(cursor="")
+
+                def kshs_usd_convert():
+                    global kshs_account_number
+                    global kshs_account_balance
+                    try:
+                        user_convert_amount = float(
+                            kshs_amount_entry.get())  # gets the amount entered by the user in the GUI
+
+                        if user_convert_amount < 0:
+                            # Handle negative input
+                            kshs_usd_result_label.config(text="Negative Value Entered\n\nTerminating Conversion...")
+                            kshs_usd_root.after(2000, show_usd_conversion_terminated)
+                            return
+                        if user_convert_amount > kshs_account_balance:
+                            # Handle insufficient balance
+                            kshs_usd_result_label.config(
+                                text=f"Insufficient Balance\nYour balance is: Kshs.{kshs_account_balance}\n\nTerminating Conversion...")
+                            kshs_usd_root.after(2000, show_usd_conversion_terminated)
+                            return
+
+                        usd_in_kshs = 0.0069
+                        bank_conversion_rate = 0.043  # bank conversion fee = 1 USD at 0.043USD
+
+                        converted_amount = user_convert_amount * usd_in_kshs  # converted_amount in USD
+
+                        result_text = f"""
+                            ___________________________________________________________________________
+                            COOP-BANK: CONVERSION SUMMARY
+                            Date: {date_and_time}
+                            Amount to convert: {round(user_convert_amount, 2)} Kshs
+                            Amount in USD before conversion fee: {round(converted_amount, 2)} USD
+                            Coop-Bank USD conversion rate: {bank_conversion_rate}
+                            ___________________________________________________________________________
+                            """
+
+                        # Handle USD conversion
+                        bank_conversion_fee_in_usd = bank_conversion_rate * converted_amount
+                        amount_after_bank_rate = converted_amount - bank_conversion_fee_in_usd
+
+                        result_text += f"""
+                            \t\t\tConversion Successful!\n
+                            Your account balance in USD:
+                            {round(amount_after_bank_rate, 2)} USD
+                            Transaction Date and Time:
+                            {date_and_time}
+
+                            Thank you for banking with us.
+                            ___________________________________________________________________________
+                            """
+
+                        kshs_usd_result_label.config(text=result_text)
+                        kshs_account_balance -= converted_amount / usd_in_kshs
+
+                        # Save the kshs_account_balance to a JSON file
+                        with open("Coop_Bank_Balances.json", "w") as final_json_file:
+                            data_final = json.load(final_json_file)
+                            if "ksh_account" in data_final:
+                                data_final["ksh_account"][kshs_account_number][kshs_account_balance] = kshs_account_balance
+
+                            # Save the updated data back to the JSON file
+                            with open("Coop_Bank_Balances.json", "w") as update_json_file:
+                                json.dump(data, update_json_file,
+                                          indent=4)  # Use indent for pretty formatting (optional)
+
+                    except ValueError:
+                        kshs_usd_result_label.config(text="Only Numbers Allowed!!!\n\nTerminating Conversion...")
+                        root.after(2000, show_usd_conversion_terminated)
+                        return
+
+                kshs_usd_root = Tk()
+                kshs_usd_root.title("KSH-USD CONVERSIONS")
+
+                kshs_input_label = Label(kshs_usd_root, text="Enter Amount to Convert to USD:")
+                kshs_amount_entry = Entry(root, bg='#B19CD9', bd=3, relief="groove", fg='white', selectbackground='magenta',
+                                     state=NORMAL)
+                kshs_amount_entry.grid(row=1, column=0, columnspan=2)
+
+                convert_img = PhotoImage(file="tk_convert_button.PNG")  # have this file in your python directory
+                convert_image = convert_img.subsample(int(convert_img.width() / 35),
+                                                      int(convert_img.height() / 9))  # resizing image
+                convert_button = Button(root, command=kshs_usd_convert, text="Convert", bg="cyan", activebackground="green",
+                                        fg="black",
+                                        activeforeground='orange',
+                                        relief="ridge",  # must be flat, groove, raised, ridge, solid, or sunken
+                                        image=convert_image  # we will use image, don't add image if you want text
+                                        )
+                convert_button.grid(row=2, column=0)
+
+                cancel_img = PhotoImage(file="tk_cancel_button.PNG")  # loading image
+                cancel_image = cancel_img.subsample(int(cancel_img.width() / 30),
+                                                    int(cancel_img.height() / 11))  # resizing image
+                cancel_button = Button(root, command=cancel_usd_conversion, text="Cancel", bg="yellow",
+                                       activebackground="red",
+                                       fg="black",
+                                       activeforeground='white',  # you can add padx=2, height=1
+                                       image=cancel_image)
+                cancel_button.grid(row=2, column=1)
+
+                # Bind hover and leave events for Convert and Cancel buttons
+                convert_button.bind("<Enter>",
+                                    on_convert_hover)  # The "Enter" and "Leave" events are mouse-related events in Tkinter
+                convert_button.bind("<Leave>", on_convert_leave)
+
+                cancel_button.bind("<Enter>", on_cancel_hover)
+                cancel_button.bind("<Leave>", on_cancel_leave)
+
+                kshs_usd_result_label = Label(root, text="", justify=LEFT)
+                kshs_usd_result_label.grid(row=3, column=0, columnspan=2)
+
+            else:
+                kshs_dollar_label.config(text="Wrong Password or Account Number\n\n")
+                root.after(2000)
+    except FileNotFoundError:
+        pass  # JSON file doesn't exist, use the default balance
+
+# _______________________________________________________GUI CONFIGURATION______________________________________________
+# __________________________Main GUI window___________________________________
+root = Tk()
+root.title("COOP-BANK KSH-USD CONVERSIONS")
+# _____________________________________________________________________________
+
+
+# ____________________kshs to usd gui____________
+kshs_dollar_label = Label(root, text="SHILLINGS TO DOLLAR CONVERSION", fg="white", bg='black', relief="ridge",
+                     font=("Helvetica", 9, "bold"))
+kshs_dollar_label.grid(row=0, column=0, columnspan=5)
+
+kshs_account_label = Label(root, text="Kshs Account Number:")
+kshs_account_label.grid(row=3, column=0)
+
+kshs_account_entry = Entry(root, bd=3)  # bd=borderwidth
+kshs_account_entry.grid(row=3, column=1)
+
+kshs_pw_label = Label(root, text="Kshs Account Password:")
+kshs_pw_label.grid(row=4, column=0)
+
+kshs_pw_entry = Entry(root, bd=3, show="*")  # bd=borderwidth
+kshs_pw_entry.grid(row=4, column=1)
+
+kshs_signin_button = Button(root, text="Sign in", command=load_account_logins, background='green')
+kshs_signin_button.grid(row=5, column=1)
+
+kshs_pwreset_button = Button(root, text="Forgot Password?", command="", background='yellow')
+kshs_pwreset_button.grid(row=5, column=3)
+
+space_between_kshs_usd = Label(root, text="")
+space_between_kshs_usd.grid(row=6, column=1)
+
+# ______________________usd to shillings logins gui_________________
+dollar_kshs_label = Label(root, text="DOLLAR TO SHILLINGS CONVERSION", fg="white", bg='black', relief="ridge",
+                            font=("Helvetica", 9, "bold"))
+dollar_kshs_label.grid(row=8, column=0, columnspan=5)
+
+dollar_account_label = Label(root, text="USD Account Number:")
+dollar_account_label.grid(row=9, column=0)
+
+dollar_account_entry = Entry(root, bd=3)  # bd=borderwidth
+dollar_account_entry.grid(row=9, column=1)
+
+dollar_pw_label = Label(root, text="USD Account Password:")
+dollar_pw_label.grid(row=10, column=0)
+
+dollar_pw_entry = Entry(root, bd=3, show="*")  # bd=borderwidth
+dollar_pw_entry.grid(row=10, column=1)
+
+dollar_signin_button = Button(root, text="Sign in", command=load_account_logins, background='green')
+dollar_signin_button.grid(row=11, column=1)
+
+dollar_pwreset_button = Button(root, text="Forgot Password?", command="", background='yellow')
+dollar_pwreset_button.grid(row=11, column=3)
+
+
+# ______________________________________________________________________________________________________________________
+"""
+#ALTERNATIVE CODE FOR BASIC PACK()
+# pack() - used to organize and arrange widgets within a container (typically a frame or the main window)
+# pack is flexible but not good for complext GUI designs
+
+amount_label = Label(root, text="Enter amount in Kshs to convert to USD:")
+amount_label.pack() 
+
+amount_entry = Entry(root)
+amount_entry.pack()
+
+convert_button = Button(root, text="Convert", command=convert)
+convert_button.pack(side="left")
+
+cancel_button = Button(root, text="Cancel", command=cancel_conversion)
+cancel_button.pack(side="right")
+
+result_label = Label(root, text="", justify=LEFT)  # contents of the result to appear on the left
+result_label.pack()
+"""
+root.mainloop()
