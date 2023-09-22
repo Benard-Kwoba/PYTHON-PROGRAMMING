@@ -4,7 +4,7 @@ from tkinter import messagebox
 class TodoListApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("To-Do List App")
+        self.root.title("Programmer's To-Do List App")
         self.pending_tasks = []
         self.completed_tasks = []
 
@@ -23,24 +23,27 @@ class TodoListApp:
         self.completed_label.pack(pady=10)
 
         # Create listboxes
-        self.pending_listbox = tk.Listbox(self.left_frame, font=("Helvetica", 14), selectbackground="yellow")
+        self.pending_listbox = tk.Listbox(self.left_frame, font=("Helvetica", 14), selectbackground="blue")
         self.pending_listbox.pack(fill=tk.BOTH, expand=True)
 
         self.completed_listbox = tk.Listbox(self.right_frame, font=("Helvetica", 14), selectbackground="green")
         self.completed_listbox.pack(fill=tk.BOTH, expand=True)
 
         # Create entry field
-        self.task_entry = tk.Entry(self.left_frame, font=("Helvetica", 14))
-        self.task_entry.pack(fill=tk.BOTH, expand=True)
+        self.task_entry = tk.Entry(self.left_frame, font=("Helvetica", 14), background="#ADD8E6", highlightcolor='grey')
+        self.task_entry.pack(fill=tk.BOTH, expand=False)  # set to TRUE to expand
 
         # Create buttons
-        self.add_button = tk.Button(self.left_frame, text="Add Task", command=self.add_task, font=("Helvetica", 14))
+        self.add_button = tk.Button(self.left_frame, text="Add Task", command=self.add_task, font=("Helvetica", 14),
+                                    background="#98FB98", relief="groove")
         self.add_button.pack(pady=5)
 
-        self.complete_button = tk.Button(self.left_frame, text="Complete Task", command=self.complete_task, font=("Helvetica", 14))
+        self.complete_button = tk.Button(self.left_frame, text="Complete Task", command=self.complete_task,
+                                         font=("Helvetica", 14), background="green")
         self.complete_button.pack(pady=5)
 
-        self.clear_button = tk.Button(self.right_frame, text="Clear Completed", command=self.clear_completed, font=("Helvetica", 14))
+        self.clear_button = tk.Button(self.right_frame, text="Clear Completed",
+                                      command=self.clear_completed, background="red",font=("Helvetica", 14))
         self.clear_button.pack(pady=5)
 
         # Load tasks from file
