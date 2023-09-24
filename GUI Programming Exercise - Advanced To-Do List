@@ -1,93 +1,99 @@
 import tkinter as tk
-from tkinter import messagebox
 
-class TodoListApp:
+
+class MyApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Programmer's To-Do List App")
         self.pending_tasks = []
         self.completed_tasks = []
 
-        # Create frames
-        self.left_frame = tk.Frame(root, padx=10, pady=10)
-        self.left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        # create frames
+        self.left_frame = tk.Frame(root, padx=10, pady=10)  # root is the argument passed to the MyApp class constructor
+        self.left_frame.pack(side="left", fill="both", expand=True)
 
         self.right_frame = tk.Frame(root, padx=10, pady=10)
-        self.right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+        self.right_frame.pack(side="right", fill="both", expand=True)
 
-        # Create labels
-        self.pending_label = tk.Label(self.left_frame, text="Pending Tasks", font=("Helvetica", 16))
-        self.pending_label.pack(pady=10)
+        # add labels
+        self.left_label = tk.Label(self.left_frame, text="PENDING TASKS", bg='yellow')
+        self.left_label.pack(pady=10)
 
-        self.completed_label = tk.Label(self.right_frame, text="Completed Tasks", font=("Helvetica", 16))
-        self.completed_label.pack(pady=10)
+        self.right_label = tk.Label(self.right_frame, text='COMPLETED TASKS', bg='green', fg='white')
+        self.right_label.pack(pady=10)
 
-        # Create listboxes
-        self.pending_listbox = tk.Listbox(self.left_frame, font=("Helvetica", 14), selectbackground="blue")
-        self.pending_listbox.pack(fill=tk.BOTH, expand=True)
+        # add listbox
+        self.pending_tasks_listbox = tk.Listbox(self.left_frame, background='grey', selectbackground='blue',
+                                                fg='white')
+        self.pending_tasks_listbox.pack(fill='both')
 
-        self.completed_listbox = tk.Listbox(self.right_frame, font=("Helvetica", 14), selectbackground="green")
-        self.completed_listbox.pack(fill=tk.BOTH, expand=True)
+        self.completed_tasks_listbox = tk.Listbox(self.right_frame, background='grey', selectbackground='blue',
+                                                  fg='white')
+        self.completed_tasks_listbox.pack(fill='both')
 
-        # Create entry field
-        self.task_entry = tk.Entry(self.left_frame, font=("Helvetica", 14), background="#ADD8E6", highlightcolor='grey')
-        self.task_entry.pack(fill=tk.BOTH, expand=False)  # set to TRUE to expand
+        # create entry field
+        self.task_entry = tk.Entry(self.left_frame, background="#ADD8E6", highlightcolor='grey')
+        self.task_entry.pack(fill="both")
 
-        # Create buttons
-        self.add_button = tk.Button(self.left_frame, text="Add Task", command=self.add_task, font=("Helvetica", 14),
-                                    background="#98FB98", relief="groove")
-        self.add_button.pack(pady=5)
+        # create add task button
+        self.add_task_button = tk.Button(self.left_frame, background="#98FB98", relief='groove',
+                                         command=self.add_tasks, text="Add a task", font=("Helvetica", 14))
+        self.add_task_button.pack(pady=5)
 
-        self.complete_button = tk.Button(self.left_frame, text="Complete Task", command=self.complete_task,
-                                         font=("Helvetica", 14), background="green")
-        self.complete_button.pack(pady=5)
+        # create complete task button
+        self.complete_task_button = tk.Button(self.left_frame, background="#98FB98", relief='groove',
+                                              command=self.complete_task, text="Mark task as completed", bg='green',
+                                              fg='yellow', font=("Helvetica", 14))
+        self.complete_task_button.pack(pady=5)
 
-        self.clear_button = tk.Button(self.right_frame, text="Clear Completed",
-                                      command=self.clear_completed, background="red",font=("Helvetica", 14))
-        self.clear_button.pack(pady=5)
+        # create clear completed task button
+        self.clear_completed_task_button = tk.Button(self.right_frame, background="#98FB98", relief='groove',
+                                                     command=self.clear_completed_tasks, text="Clear completed tasks",
+                                                     bg='red', fg='white', font=("Helvetica", 14))
+        self.clear_completed_task_button.pack(pady=5)
 
-        # Load tasks from file
+        # load tasks to the app
         self.load_tasks()
 
-    def add_task(self):
-        task = self.task_entry.get()
+    def add_tasks(self):
+        task = self.task_entry.get().capitalize()
         if task:
             self.pending_tasks.append(task)
-            self.update_pending_listbox()
+            self.update_pending_tasks_listbox()
             self.task_entry.delete(0, tk.END)
             self.save_tasks()
 
     def complete_task(self):
-        selected_task = self.pending_listbox.curselection()
+        selected_task = self.pending_tasks_listbox.curselection()
         if selected_task:
             task_index = selected_task[0]
             completed_task = self.pending_tasks.pop(task_index)
-            self.update_pending_listbox()
+            self.update_pending_tasks_listbox()
             self.completed_tasks.append(completed_task)
-            self.update_completed_listbox()
+            self.update_completed_tasks_listbox()
             self.save_tasks()
 
-    def clear_completed(self):
-        self.completed_tasks = []
-        self.update_completed_listbox()
+    def clear_completed_tasks(self):
+        self.completed_tasks = []  # clear the contents of self.completed_tasks
+        self.update_completed_tasks_listbox()
         self.save_tasks()
 
-    def update_pending_listbox(self):
-        self.pending_listbox.delete(0, tk.END)
+    def update_pending_tasks_listbox(self):
+        self.pending_tasks_listbox.delete(0, tk.END)
         for task in self.pending_tasks:
-            self.pending_listbox.insert(tk.END, task)
+            self.pending_tasks_listbox.insert(tk.END, task)
 
-    def update_completed_listbox(self):
-        self.completed_listbox.delete(0, tk.END)
+    def update_completed_tasks_listbox(self):
+        self.completed_tasks_listbox.delete(0, tk.END)
         for task in self.completed_tasks:
-            self.completed_listbox.insert(tk.END, task)
+            self.completed_tasks_listbox.insert(tk.END, task)
 
     def load_tasks(self):
         try:
             with open("tasks.txt", "r") as file:
                 lines = file.readlines()
                 self.pending_tasks = [line.strip() for line in lines]
-                self.update_pending_listbox()
+                self.update_pending_tasks_listbox()
         except FileNotFoundError:
             pass
 
@@ -96,11 +102,13 @@ class TodoListApp:
             for task in self.pending_tasks:
                 file.write(task + "\n")
 
+
 def main():
     root = tk.Tk()
-    app = TodoListApp(root)
+    MyApp(root)
     root.geometry("600x400")
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()
