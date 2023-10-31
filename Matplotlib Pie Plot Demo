@@ -16,18 +16,20 @@ plt.title('Monthly budget of a single man earning 30,000kshs'.upper(),
           c='darkorange',
           weight='bold')
 
-# Find the indices for the biggest and least expenditure
+"""
+Add annotations for the biggest expenditure based on the calculated indices
+Find the indices for the biggest and least expenditure
 max_index = np.argmax(expenditure)
 min_index = np.argmin(expenditure)
 
-# Add annotations for the biggest and least expenditure based on the calculated indices
 plt.annotate("Biggest expenditure",
              c='red',
              style='italic',
              weight='bold',
-             xy=(0.2, 0.2),  # Automatically selects the category with the highest expenditure
+             xy=(0.2, 0.2),  # Adjust to select the category with the highest expenditure
              xytext=(0.5, 0.5),  # Indicates the location where the text will be placed
              arrowprops=dict(arrowstyle='->'))  # Arrow pointing from the text to the annotated point.
+"""
 
 plt.show()
 # to save the fig use plt.savefig("pie_chart.png")
