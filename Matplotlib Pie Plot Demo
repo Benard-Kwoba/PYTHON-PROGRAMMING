@@ -25,18 +25,9 @@ plt.annotate("Biggest expenditure",
              c='red',
              style='italic',
              weight='bold',
-             xy=(max_index, 0),  # Automatically selects the category with the highest expenditure
+             xy=(0.2, 0.2),  # Automatically selects the category with the highest expenditure
              xytext=(0.5, 0.5),  # Indicates the location where the text will be placed
              arrowprops=dict(arrowstyle='->'))  # Arrow pointing from the text to the annotated point.
 
-"""
-plt.annotate("Least expenditure",
-             c='blue',
-             style='italic',
-             weight='bold',
-             xy=(min_index, 0),  # annotation will be placed on the horizontal axis of the plot at the level of the corresponding category.
-             xytext=(0.5, 0.8),  # Indicates the location where the text will be placed
-             arrowprops=dict(arrowstyle='->'))  # Arrow pointing from the text to the annotated point.
-"""
 plt.show()
 # to save the fig use plt.savefig("pie_chart.png")
