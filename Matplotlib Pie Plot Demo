@@ -24,7 +24,7 @@ plt.legend(title="Expenditure:",
            bbox_to_anchor=(1, 0.5),  # legend to be positioned right side (1) and vertically centered (0.5)
            loc="lower left")
 
-plt.title('Monthly budget of a single man earning 30,000kshs'.upper(),
+plt.title('Monthly budget of a first-born earning 30,000kshs\U0001F602\U0001F61D\U0001F633'.upper(),
           c='darkorange',
           weight='bold',
           fontdict={'fontsize':14})
