@@ -1,35 +1,64 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 
-expenditure = np.array([10000, 2000, 6500, 500, 300, 5000, 6500])
+expenditure = [10000, 2000, 6500, 500, 300, 5000, 6500]
 categories = ["Rent", "Transport", "Food", "Electricity", "Water", "Savings", "Parental care"]
+least_expenditure_index = np.argmin(expenditure)
+biggest_expenditure_index = np.argmax(expenditure)
 
-plt.pie(expenditure,
-        labels=categories,
-        shadow=True,
-        autopct='%1.1f%%',  # formatted as float percentage with 1dp
-        labeldistance=1)
+# The function pie() returns a list of text instances.
+patches, texts, autotexts = plt.pie(expenditure,
+        labels=categories,shadow=True, autopct='%1.1f%%',  # formatted as float percentage with 1dp
+        textprops={'fontsize':9}, labeldistance=0.80,
+        # textprops={'fontsize':9, 'weight': 'bold', 'fontstyle':'italic', 'horizontalalignment': 'center'}
+        # Use Seaborn's color palette 'Set1'-9colors, 'Set2'-8colors, 'Set3'-12colors
+        # other sets: Set1,Set3,Paired,cubehelix,hls,husl etc
+        colors = sns.color_palette('Set3'), startangle=90,
+        # Add space around each slice
+        explode=[0.1 if max(expenditure) == value else 0.05 for value in expenditure],
+        #  slices are plotted clockwise.
+        counterclock=False)
+
 plt.legend(title="Expenditure:",
            bbox_to_anchor=(1, 0.5),  # legend to be positioned right side (1) and vertically centered (0.5)
            loc="lower left")
+
 plt.title('Monthly budget of a single man earning 30,000kshs'.upper(),
           c='darkorange',
-          weight='bold')
+          weight='bold',
+          fontdict={'fontsize':14})
 
-"""
-Add annotations for the biggest expenditure based on the calculated indices
-Find the indices for the biggest and least expenditure
-max_index = np.argmax(expenditure)
-min_index = np.argmin(expenditure)
+# Customize text labels
+for text in texts:
+    text.set_horizontalalignment('center')
 
-plt.annotate("Biggest expenditure",
-             c='red',
-             style='italic',
-             weight='bold',
-             xy=(0.2, 0.2),  # Adjust to select the category with the highest expenditure
-             xytext=(0.5, 0.5),  # Indicates the location where the text will be placed
-             arrowprops=dict(arrowstyle='->'))  # Arrow pointing from the text to the annotated point.
-"""
+# Customize percent labels
+for autotext in autotexts:
+    autotext.set_horizontalalignment('center')
+    autotext.set_fontstyle('italic')
+    autotext.set_fontweight('bold')
+
+# ________________Hide slices with least expenditure values______________
+patches[least_expenditure_index].set_visible(False)
+texts[least_expenditure_index].set_visible(False)
+autotexts[least_expenditure_index].set_visible(False)
+plt.show()  # comment this if you only want to show biggest expenditure
+
+# _______________another plot with only biggest expenditure_________________
+# Iterate over slices
+for idx, wedge in enumerate(patches):
+    # Hide all slices except the biggest expenditure; max(expenditure)
+    if (idx != biggest_expenditure_index):
+        wedge.set_visible(False)
+        texts[idx].set_visible(False)
+        autotexts[idx].set_visible(False)
+
+
+# Change the face and edge colors for biggest_expenditure slice
+patches[biggest_expenditure_index].set_edgecolor('blue')
+patches[biggest_expenditure_index].set_facecolor('lightblue')
+
 
 plt.show()
 # to save the fig use plt.savefig("pie_chart.png")
