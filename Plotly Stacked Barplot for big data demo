@@ -1,0 +1,35 @@
+#Simple stacked bar chart with Plotly
+import plotly.express as px
+import pandas as pd
+
+# Load the expanded dataset
+data = pd.read_csv('business_sales_expanded.csv')
+f""" _____business_sales_expanded.csv______
+Month,Coca-Cola,Sprite
+January,50000,30000
+February,60000,35000
+March,75000,40000
+April,80000,42000
+May,90000,45000
+June,105000,48000
+July,110000,49000
+August,115000,50000
+September,95000,43000
+October,85000,41000
+November,70000,38000
+December,55000,32000
+"""
+
+# Create a stacked bar chart with Plotly
+fig = px.bar(data, x='Month', y=['Coca-Cola', 'Sprite'], title='Monthly Sales Analysis by Product')
+
+# Customize the chart appearance
+fig.update_traces(marker_line_color='black', opacity=0.7)
+fig.update_layout(
+    xaxis_title='Month',
+    yaxis_title='Revenue (in USD)',
+    barmode='stack',
+)
+
+# Show the plot
+fig.show()
