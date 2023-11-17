@@ -1,0 +1,123 @@
+#Simple stacked bar chart with Plotly
+import plotly.express as px
+import pandas as pd
+
+# Load the expanded dataset
+data = pd.read_csv('business_sales_expanded.csv')
+f""" _____business_sales_expanded.csv______
+Month,Coca-Cola,Sprite
+January,50000,30000
+February,60000,35000
+March,75000,40000
+April,80000,42000
+May,90000,45000
+June,105000,48000
+July,110000,49000
+August,115000,50000
+September,95000,43000
+October,85000,41000
+November,70000,38000
+December,55000,32000
+"""
+
+# Create a stacked bar chart with Plotly
+fig = px.bar(data, x='Month', y=['Coca-Cola', 'Sprite'], title='Monthly Sales Analysis by Product')
+
+# Customize the chart appearance
+fig.update_traces(marker_line_color='black', opacity=0.7)
+fig.update_layout(
+    xaxis_title='Month',
+    yaxis_title='Revenue (in USD)',
+    barmode='stack',
+)
+
+# Show the plot
+fig.show()
+
+"""
+______________FOR LINE CHART USE BELOW _______________
+# Create a line chart for monthly sales trends
+fig = px.line(data, x='Month', y=['Coca-Cola', 'Sprite'], title='Monthly Sales Trends by Product')
+fig.update_traces(marker_line_color='black')
+fig.update_layout(
+    xaxis_title='Month',
+    yaxis_title='Revenue (in USD)',
+)
+fig.show()
+
+______________FOR AREA CHART USE BELOW _______________
+# Create an area chart for cumulative stacked sales
+data['Coca-Cola Cumulative'] = data['Coca-Cola'].cumsum()
+data['Sprite Cumulative'] = data['Sprite'].cumsum()
+fig = px.area(data, x='Month', y=['Coca-Cola Cumulative', 'Sprite Cumulative'], title='Cumulative Stacked Sales Over Time')
+fig.update_layout(
+    xaxis_title='Month',
+    yaxis_title='Cumulative Revenue (in USD)',
+)
+fig.show()
+
+______________FOR BOX PLOT USE BELOW _______________
+# Create a box plot for monthly sales distribution
+fig = px.box(data, x='Month', y=['Coca-Cola', 'Sprite'], title='Monthly Sales Distribution by Product')
+fig.update_traces(marker_line_color='black')
+fig.update_layout(
+    xaxis_title='Month',
+    yaxis_title='Revenue (in USD)',
+)
+fig.show()
+
+______________FOR AREA CHART WITH RANGE SLIDER USE BELOW_______________
+import plotly.graph_objects as go
+
+# Create an interactive area chart with a range slider
+fig = go.Figure()
+
+for product in ['Coca-Cola', 'Sprite']:
+    fig.add_trace(go.Scatter(x=data['Month'], y=data[product], mode='lines', name=product))
+
+fig.update_xaxes(rangeslider_visible=True)
+fig.update_layout(
+    title='Monthly Sales Trends by Product with Range Slider',
+    xaxis_title='Month',
+    yaxis_title='Revenue (in USD)',
+)
+fig.show()
+
+______________FOR HEATMAP USE BELOW_______________
+import plotly.express as px
+
+# Create a heatmap to visualize sales patterns
+data_pivoted = data.pivot("Month", "Product", "Revenue")
+fig = px.imshow(data_pivoted, x=data_pivoted.columns, y=data_pivoted.index,
+                labels=dict(x="Product", y="Month", color="Revenue"),
+                title="Sales Heatmap")
+fig.show()
+
+______________FOR SUNBURST CHART USE BELOW_______________
+import plotly.express as px
+
+# Create a sunburst chart for hierarchical sales analysis
+data['Category'] = ['Beverages'] * len(data)
+fig = px.sunburst(data, path=['Category', 'Month'], values='Revenue',
+                  title="Hierarchical Sales Analysis by Month")
+fig.show()
+
+______________FOR ANIMATED 3-D SCATTER PLOT USE BELOW_______________
+import plotly.express as px
+import pandas as pd
+
+# Load the sample dataset
+data = pd.read_csv('air_quality_data.csv')
+
+# Create an animated 3D scatter plot
+fig = px.scatter_3d(data, x='Station_A', y='Station_B', z='Station_C', animation_frame='Month',
+                    title='Air Quality Change Over Time', labels={'Station_A': 'Station A', 'Station_B': 'Station B', 'Station_C': 'Station C'})
+
+# Customize the appearance
+fig.update_traces(marker=dict(size=5, opacity=0.7))
+fig.update_layout(scene=dict(xaxis_title='PM2.5 at Station A', yaxis_title='PM2.5 at Station B', zaxis_title='PM2.5 at Station C'))
+
+# Show the animated plot
+fig.show()
+
+"""
