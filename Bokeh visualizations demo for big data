@@ -1,44 +1,57 @@
-from bokeh.io import show
-from bokeh.models import ColumnDataSource, LinearColorMapper
+from bokeh.io import output_file, show
 from bokeh.plotting import figure
-from bokeh.layouts import layout
-from bokeh.models import CustomJS
-from bokeh.models.widgets import Slider
-from bokeh.sampledata.iris import flowers
-import numpy as np
+from bokeh.models import ColumnDataSource, HoverTool
+import pandas as pd
 
-# Load the iris dataset
-iris = flowers.copy()
+# Load the expanded dataset
+data = pd.DataFrame({
+    'Month': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    'Coca-Cola': [50000, 60000, 75000, 80000, 90000, 105000, 110000, 115000, 95000, 85000, 70000, 55000],
+    'Sprite': [30000, 35000, 40000, 42000, 45000, 48000, 49000, 50000, 43000, 41000, 38000, 32000]
+})
 
-# Extract relevant columns for the demonstration
-categories = list(iris['species'].unique())
-heights = np.random.randint(10, 100, len(categories))
+# Create a Bokeh data source
+source = ColumnDataSource(data)
 
-# Create a Bokeh figure
-plot = figure(x_range=categories, plot_height=400, title="Interactive Bar Plot")
-color_mapper = LinearColorMapper(palette="Viridis256", low=min(heights), high=max(heights))
-source = ColumnDataSource(data=dict(categories=categories, heights=heights, color=heights))
-bars = plot.vbar(x='categories', top='heights', source=source, width=0.5, color={'field': 'color', 'transform': color_mapper})
+# Create a stacked bar chart
+p = figure(x_range=data['Month'], plot_height=400, title='Monthly Sales Analysis by Product',
+           toolbar_location=None, tools="")
 
-# Create sliders for controlling bar heights
-height_slider = Slider(start=10, end=100, step=1, value=50, title="Bar Height")
+# Add stacked bars for Coca-Cola and Sprite
+p.vbar_stack(stackers=['Coca-Cola', 'Sprite'], x='Month', width=0.9, color=['#1f77b4', '#ff7f0e'], source=source,
+             legend_label=['Coca-Cola', 'Sprite'])
 
-# Define JavaScript callback for slider interaction
-callback = CustomJS(args=dict(source=source, height_slider=height_slider), code="""
-    var data = source.data;
-    var heights = data['heights'];
-    var selected_height = height_slider.value;
+# Customize the chart appearance
+p.y_range.start = 0
+p.legend.title = "Product"
+p.legend.label_text_font_size = '10pt'
+p.yaxis.axis_label_text_font_size = '12pt'
+p.xaxis.axis_label_text_font_size = '12pt'
+p.title.text_font_size = '16pt'
 
-    for (var i = 0; i < heights.length; i++) {
-        heights[i] = Math.random() * selected_height;  // Use Math.random() for dynamic heights
-    }
+# Add hover tooltip
+hover = HoverTool(tooltips=[("Month", "@Month"),
+                            ("Coca-Cola Revenue", "@{Coca-Cola} USD"),
+                            ("Sprite Revenue", "@{Sprite} USD")])
+p.add_tools(hover)
 
-    source.change.emit();
-""")
-height_slider.js_on_change('value', callback)
+# Rotate x-axis labels for better clarity
+p.xaxis.axis_label = "Months"
+p.xaxis.major_label_orientation = "vertical"
 
-# Create layout with the plot and slider
-layout = layout([[plot], [height_slider]])
+# Show the data labels on the bars
+"""
+for product in ['Coca-Cola', 'Sprite']:
+    p.text(x='Month', y=product, text=product, source=source, text_align="center", text_baseline="middle",
+           text_font_size='8pt', text_color='black', y_offset=-5)
+"""
 
-# Show the plot in a new window
-show(layout)
+# Customize y-axis
+p.yaxis.axis_label = "Revenue"
+p.yaxis.formatter.use_scientific = False
+
+# Save the output to an HTML file (optional)
+output_file("monthly_sales_analysis.html")
+
+# Show the plot
+show(p)
