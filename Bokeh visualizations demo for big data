@@ -1,0 +1,44 @@
+from bokeh.io import show
+from bokeh.models import ColumnDataSource, LinearColorMapper
+from bokeh.plotting import figure
+from bokeh.layouts import layout
+from bokeh.models import CustomJS
+from bokeh.models.widgets import Slider
+from bokeh.sampledata.iris import flowers
+import numpy as np
+
+# Load the iris dataset
+iris = flowers.copy()
+
+# Extract relevant columns for the demonstration
+categories = list(iris['species'].unique())
+heights = np.random.randint(10, 100, len(categories))
+
+# Create a Bokeh figure
+plot = figure(x_range=categories, plot_height=400, title="Interactive Bar Plot")
+color_mapper = LinearColorMapper(palette="Viridis256", low=min(heights), high=max(heights))
+source = ColumnDataSource(data=dict(categories=categories, heights=heights, color=heights))
+bars = plot.vbar(x='categories', top='heights', source=source, width=0.5, color={'field': 'color', 'transform': color_mapper})
+
+# Create sliders for controlling bar heights
+height_slider = Slider(start=10, end=100, step=1, value=50, title="Bar Height")
+
+# Define JavaScript callback for slider interaction
+callback = CustomJS(args=dict(source=source, height_slider=height_slider), code="""
+    var data = source.data;
+    var heights = data['heights'];
+    var selected_height = height_slider.value;
+
+    for (var i = 0; i < heights.length; i++) {
+        heights[i] = Math.random() * selected_height;  // Use Math.random() for dynamic heights
+    }
+
+    source.change.emit();
+""")
+height_slider.js_on_change('value', callback)
+
+# Create layout with the plot and slider
+layout = layout([[plot], [height_slider]])
+
+# Show the plot in a new window
+show(layout)
