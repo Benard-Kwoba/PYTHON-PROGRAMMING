@@ -3,36 +3,75 @@ import plotly.express as px
 import pandas as pd
 
 # Load the expanded dataset
-data = pd.read_csv('business_sales_expanded.csv')
-f""" _____business_sales_expanded.csv______
-Month,Coca-Cola,Sprite
-January,50000,30000
-February,60000,35000
-March,75000,40000
-April,80000,42000
-May,90000,45000
-June,105000,48000
-July,110000,49000
-August,115000,50000
-September,95000,43000
-October,85000,41000
-November,70000,38000
-December,55000,32000
-"""
+data = pd.DataFrame({
+    'Month': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    'Coca-Cola': [50000, 60000, 75000, 80000, 90000, 105000, 110000, 115000, 95000, 85000, 70000, 55000],
+    'Sprite': [30000, 35000, 40000, 42000, 45000, 48000, 49000, 50000, 43000, 41000, 38000, 32000]
+})
 
 # Create a stacked bar chart with Plotly
-fig = px.bar(data, x='Month', y=['Coca-Cola', 'Sprite'], title='Monthly Sales Analysis by Product')
+fig = px.bar(data, x='Month', y=['Coca-Cola', 'Sprite'], title='COCACOLA KISUMU 2023 YEARLY RESULTS: Monthly Sales Analysis by Product')
 
 # Customize the chart appearance
 fig.update_traces(marker_line_color='black', opacity=0.7)
 fig.update_layout(
     xaxis_title='Month',
-    yaxis_title='Revenue (in USD)',
+    yaxis_title='Revenue (in KSH)',
     barmode='stack',
+)
+
+# Find the best and least revenues for each product
+best_revenue_coca_cola = data['Coca-Cola'].max()
+least_revenue_coca_cola = data['Coca-Cola'].min()
+
+best_revenue_sprite = data['Sprite'].max()
+least_revenue_sprite = data['Sprite'].min()
+
+# Annotate the best and least revenues for Coca-Cola
+fig.add_annotation(
+    x=data['Month'][data['Coca-Cola'].idxmax()],
+    y=best_revenue_coca_cola,
+    text=f"Best Revenue: {best_revenue_coca_cola}Kshs",
+    showarrow=True,
+    arrowhead=5,
+    ax=0,
+    ay=-40
+)
+
+fig.add_annotation(
+    x=data['Month'][data['Coca-Cola'].idxmin()],
+    y=least_revenue_coca_cola,
+    text=f"Least Revenue: {least_revenue_coca_cola}Kshs",
+    showarrow=True,
+    arrowhead=5,
+    ax=0,
+    ay=40
+)
+
+# Annotate the best and least revenues for Sprite
+fig.add_annotation(
+    x=data['Month'][data['Sprite'].idxmax()],
+    y=best_revenue_sprite,
+    text=f"Best Revenue: {best_revenue_sprite}Kshs",
+    showarrow=True,
+    arrowhead=5,
+    ax=0,
+    ay=-40
+)
+
+fig.add_annotation(
+    x=data['Month'][data['Sprite'].idxmin()],
+    y=least_revenue_sprite,
+    text=f"Least Revenue: {least_revenue_sprite}Kshs",
+    showarrow=True,
+    arrowhead=5,
+    ax=0,
+    ay=40
 )
 
 # Show the plot
 fig.show()
+
 
 """
 ______________FOR LINE CHART USE BELOW _______________
@@ -41,7 +80,7 @@ fig = px.line(data, x='Month', y=['Coca-Cola', 'Sprite'], title='Monthly Sales T
 fig.update_traces(marker_line_color='black')
 fig.update_layout(
     xaxis_title='Month',
-    yaxis_title='Revenue (in USD)',
+    yaxis_title='Revenue (in KSH)',
 )
 fig.show()
 
@@ -52,7 +91,7 @@ data['Sprite Cumulative'] = data['Sprite'].cumsum()
 fig = px.area(data, x='Month', y=['Coca-Cola Cumulative', 'Sprite Cumulative'], title='Cumulative Stacked Sales Over Time')
 fig.update_layout(
     xaxis_title='Month',
-    yaxis_title='Cumulative Revenue (in USD)',
+    yaxis_title='Cumulative Revenue (in KSH)',
 )
 fig.show()
 
@@ -62,7 +101,7 @@ fig = px.box(data, x='Month', y=['Coca-Cola', 'Sprite'], title='Monthly Sales Di
 fig.update_traces(marker_line_color='black')
 fig.update_layout(
     xaxis_title='Month',
-    yaxis_title='Revenue (in USD)',
+    yaxis_title='Revenue (in KSH)',
 )
 fig.show()
 
@@ -79,7 +118,7 @@ fig.update_xaxes(rangeslider_visible=True)
 fig.update_layout(
     title='Monthly Sales Trends by Product with Range Slider',
     xaxis_title='Month',
-    yaxis_title='Revenue (in USD)',
+    yaxis_title='Revenue (in KSH)',
 )
 fig.show()
 
