@@ -1,0 +1,190 @@
+"""
+...........................................SAFARICOM USSD MENU SYSTEM - *100#(Console_Based)............................
+
+  - Involves handling user input and displaying appropriate menus based on the selections
+  - This is a console-based simulation, and in a real-world scenario, USSD menus are typically implemented on a server
+  and interact with a telecommunications network.
+  - Demonstrates several fundamental programming concepts; Object-Oriented Programming (OOP),Functions and Methods,
+  Conditional Statements (if-elif-else),Loops,User Input,Code Organization,Exit Mechanism,State Management
+
+"""
+# user status
+user_divert_status = "inactive"
+fuliza_membership_status = 0  # If 0 = non-member, 1 = member
+
+
+class USSDMenu:
+    def __init__(self):
+        self.current_menu = self.main_menu  # main menu returns nothing, use main_menu not main_menu()
+        self.invalid = 'Invalid choice. Try again.'
+
+    def main_menu(self):
+        print("Welcome!")
+        print("0:Jitambulishe")
+        print("1:M-PESA/Reversal")
+        print("2:Sim Card Queries")
+        print("3:Products & Services")
+        print("4:My Account")
+        print("5:My Subscriptions")
+        print("6:What's New")
+        print("7:Find Information")
+        print("8:Get PUK")
+        print("9:Buy")
+
+        choice = input("")
+        # main menu directories
+        if choice == "0":
+            self.current_menu = self.jitambulishe_menu
+        elif choice == "1":
+            self.current_menu = self.mpesa_menu
+        elif choice == "2":
+            self.current_menu = self.sim_card_queries_menu
+        elif choice == "3":
+            self.current_menu = self.products_and_services_menu
+        elif choice == "4":
+            self.current_menu = self.my_account_menu
+        elif choice == "5":
+            self.current_menu = self.my_subscriptions_menu
+        elif choice == "6":
+            self.current_menu = self.whats_new_menu
+        elif choice == "7":
+            self.current_menu = self.find_information_menu
+        elif choice == "8":
+            self.current_menu = self.get_puk_menu
+        elif choice == "9":
+            self.current_menu = self.buy_menu
+        else:
+            print(self.invalid)
+            self.main_menu()
+
+    def jitambulishe_menu(self):
+        global user_divert_status
+        print("1:Enroll")
+        print("2:Tell a friend")
+        print("3:Check referral status")
+        print("4:Upgrade Jitambulishe")
+        print("5:More About Jitambulishe")
+        print("0:Back 00:Home")
+        choice = input("")
+        if choice == "1":
+            if user_divert_status != "active":
+                print(f"""
+Dear customer, kindly deactivate diverts on
+your line by dialing # #002# to proceed with
+your Jitambulishe enrollment. Thank you.
+""")
+                exit()  # built-in function
+            else:
+                # add jitambulishe enrollment functionality here
+                pass
+        # elif -- add more functionalities for jitambulishe options above
+        elif choice == "0" or choice == "00":
+            self.current_menu = self.main_menu
+        else:
+            print(self.invalid)
+
+    def mpesa_menu(self):
+        print("1:Reversal")
+        print("2:Unlock M-PESA PIN")
+        print("3:Reset M-PESA PIN")
+        print("4:Statement")
+        print("5:M-PESA Charges")
+        print("6:Loans & Fuliza")
+        print("7:Hakikisha")
+        print("8:Bill Manager")
+        print("9:M-PESA Services")
+        print("0:BACK")
+
+        choice = input("")
+
+        if choice == "1":
+            print("""
+To reverse money or airtime, forward the
+M-PESA SMS received to 456. For paybill
+reversal, contact the receiving organization.
+Call 234 for Lipa na M-PESA reversal.
+""")
+            exit()
+        # elif -- add more functionalities e.g
+        elif choice == "6":
+            self.current_menu = self.loans_and_fuliza_submenu
+        elif choice == "0":
+            self.current_menu = self.main_menu
+        else:
+            print(self.invalid)
+
+    def loans_and_fuliza_submenu(self):
+        global fuliza_membership_status
+        print("1:Fuliza")
+        print("2:M-SHWARI")
+        print("3:KCB M-PESA")
+        print("0:BACK 00:HOME")
+        choice = input("")
+        if choice == "1":
+            if fuliza_membership_status == 1:  # a member of fuliza
+                # add fuliza members functionality e.g registration etc
+                pass
+            else:
+                fuliza_information = f"""
+Want to Join Fuliza M-PESA? Great! This
+service is offered in partnership with our bank
+partner(s). Get started?
+1:Yes
+2:Not today
+3.Query Charges
+98:More
+"""
+                print(fuliza_information)
+                choice = input("")
+                # add fuliza submenu choice functionalities e.g
+                if choice == "3":
+                    fuliza_amount = float(input("Enter Amount\n"))
+                    fuliza_interest = round(1/100 * fuliza_amount, 2)
+                    fuliza_maintenance_fee = 30.00
+                    print(f"""
+To fuliza Ksh {fuliza_amount}, you will be charged 1% interest which is Kshs {fuliza_interest} and a Daily
+maintenance fee of Ksh {fuliza_maintenance_fee}
+""")
+                    exit()
+                elif choice == "98":
+                    pass
+                else:
+                    print(fuliza_information)
+
+    # Use the above hints to add below functionalities for Safaricom's *100#
+    def sim_card_queries_menu(self):
+        pass
+
+    def products_and_services_menu(self):
+        pass
+
+    def my_account_menu(self):
+        pass
+
+    def my_subscriptions_menu(self):
+        pass
+
+    def whats_new_menu(self):
+        pass
+
+    def find_information_menu(self):
+        pass
+
+    def get_puk_menu(self):
+        pass
+
+    def buy_menu(self):
+        pass
+
+    # the main run function
+    def run(self):
+        while True:
+            self.current_menu()
+
+
+# Instantiate the USSDMenu class and run the menu system
+ussd_menu = USSDMenu()
+
+user_input = input("")
+if user_input == "*100#":
+    ussd_menu.run()
