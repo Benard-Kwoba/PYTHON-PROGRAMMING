@@ -1,0 +1,60 @@
+"""
+__________________________________________________DESKTOP CLEANER SCRIPT ____________________________________
+Kills all excel files from the desktop if not found in an array of legal excel files
+Notable os module fuctions used: os.path.join, os.listdir, os.path.isfile, os.path.endswith, os.remove,
+os.path.expanduser
+"""
+
+import os
+
+
+def is_in_array(string_to_be_found:str, arr:list) -> bool:  # returns True or False
+    # Function to check if a string is present in an array (case-insensitive)
+    # Return True if any item in the array matches the given string (case-insensitive)
+    return any(string_to_be_found.lower() == item.lower() for item in arr)  # comprehension is more pythonic
+
+
+def desktop_cleaner():
+    # Get the path to the Desktop folder
+    desktop_path = os.path.join(os.path.expanduser('~'), 'Desktop')
+
+    # List of legal excel files that should not be deleted(replace with your legal files)
+    legal_files = ["Inventory Status(Wk 43).xlsx", "KWOBA_BENARD EA_2021 2022.xls",
+                   "NI1 RECON WORKSHEET RUNNING.xlsm", "NI1 OPENING STOCKS VARIANCES 11 SEPTEMBER 2023.xlsx",
+                   "NI1 RECON WORKSHEET RUNNING.xlsx", "NI1 RECON WORKSHEET RUNNING.xls"]
+
+    # Prompt user for a password
+    input_password = input_password = input("\033[4mEnter password to confirm deletion of unwanted excel files.\n(Hint: Password = YearOfBirth)\033[0m\n")
+    # \033[4m is the ANSI escape code for underlining text. \033[0m resets the text formatting to default.
+
+
+    # Check the entered password
+    if not input_password:
+        # If password is not provided, cancel the deletion
+        print("You have not entered password. Deletion cancelled.")
+    elif input_password == "1991":
+        # If the correct password is provided
+        for file_name in os.listdir(desktop_path):
+            # Iterate through files on the Desktop
+            file_path = os.path.join(desktop_path, file_name)
+
+            # Check if the file is an Excel file
+            if os.path.isfile(file_path) and (file_name.lower().endswith('.xlsx') or file_name.lower().endswith(
+                    '.xls') or file_name.lower().endswith('.xlsm')):
+
+                # Check if the file is not in the legal files list
+                if not is_in_array(file_name, legal_files):
+                    try:
+                        # Try to remove the file
+                        os.remove(file_path)
+                    except OSError:
+                        # Handle exception if unable to remove the file
+                        pass
+    else:
+        # If the password is incorrect, inform the user and abort deletion
+        print("Incorrect password. Deletion aborted.")
+
+#Script Execution Control
+if __name__ == "__main__":
+    # Execute the desktop cleaner function when the script is run
+    desktop_cleaner()
