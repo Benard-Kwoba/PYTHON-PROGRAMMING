@@ -1,0 +1,57 @@
+# ________________________________________LockPersonalFolder Script________________________________________
+"""
+Restricts access to a specified folder containing sensitive information. The script interacts with the Windows operating
+system using the subprocess module to modify file or directory permissions.
+Requirement - Create a .env file in your this script's environment, save your password there e.g
+access_password = 'John'. Save this file as 'lockpersonalfolder.env'
+"""
+import subprocess  #  allows you to start and control external applications directly from your Python program
+import os
+from dotenv import load_dotenv  #  to hide sensitive information, such as passwords, by storing them in .env file
+
+folder_path = r"C:\Users\OtienBer\Box\PERSONAL"  # change accordingly to the folder you want to lock/unlock
+folder_name = os.path.basename(folder_path)  # returns 'PERSONAL'
+# Load the environment variables from the lockpersonalfolder.env file
+load_dotenv(dotenv_path='lockpersonalfolder.env')
+access_password = os.environ.get("access_password")
+
+def lock_folder():
+    global access_password
+    user_password = input("Enter password to restrict access: ")
+    if user_password == access_password:
+        subprocess.run(['icacls', folder_path, '/deny', '*S-1-1-0:(OI)(CI)(F)'], capture_output=True, text=True)
+        # icacls: The command to be executed. It is used to modify file or directory permissions in Windows
+        # folder_path: The path of the folder or directory for which you want to modify the permissions
+        # /deny: An argument for the icacls command that specifies to deny access to the specified user or group.
+        # *S-1-1-0: This argument represents the security identifier (SID) of the "Everyone" group
+        # (OI)(CI)(F): These flags specify the inheritance and permission settings for the denied access.
+        """
+            (OI): Object Inherit. This flag indicates that the permission applies to the folder itself.
+            (CI): Container Inherit. This flag indicates that the permission applies to subfolders and files within 
+            the folder.
+            (F): Full Control. This flag grants full control permissions.
+        """
+        print(f"The Folder {folder_name} has been locked. Access denied!!!")  # Allow access to the folder
+    else:
+        print(f"Wrong password!")
+        exit()
+
+def unlock_folder():
+    global access_password
+    user_password = input("Enter password to allow access: ")
+    if user_password == access_password:
+        subprocess.run(['icacls', folder_path, '/grant', '*S-1-1-0:(OI)(CI)F'], capture_output=True, text=True)
+        print("Password correct. Access granted.")  # Allow access to the folder
+    else:
+        print("Wrong password! Process Aborted.")
+        exit()
+
+if __name__ == "__main__":
+    choice = input(f"Enter \033[4m0 to allow access\033[0m or \033[4m1 to deny access\033[0m to the {folder_name} folder: ")
+    if choice == '0':
+        unlock_folder()
+    elif choice == '1':
+        lock_folder()
+    else:
+        print("Invalid choice!")
+
