@@ -3,6 +3,13 @@ __________________________________________________DESKTOP CLEANER SCRIPT _______
 Kills all excel files from the desktop if not found in an array of legal excel files
 Notable os module fuctions used: os.path.join, os.listdir, os.path.isfile, os.path.endswith, os.remove,
 os.path.expanduser
+To run this script from the desktop as .bat file:
+create DesktopCleaner.bat file with below:
+
+@echo off
+pythonw.exe "C:\path\to\your\script.py" 
+
+Note: If you are using Python 3, replace pythonw.exe with pythonw3.exe or python.exe.
 """
 
 import os
