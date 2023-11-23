@@ -54,4 +54,17 @@ if __name__ == "__main__":
         lock_folder()
     else:
         print("Invalid choice!")
+"""
+To destroy a folder
+import shutil
+import os
 
+folder_path = r"C:\Users\OtienBer\Box"
+
+try:
+    shutil.rmtree(folder_path, onerror=lambda func, path, exc_info: os.chmod(path, 0o777) if os.path.isdir(path) else os.unlink(path))
+    print(f"The folder {folder_path} has been forcefully deleted.")
+except Exception as e:
+    print(f"An error occurred: {e}")
+
+"""
