@@ -78,6 +78,7 @@ class Notepad:
         edit_menu.add_separator()
         edit_menu.add_command(label="Select All", command=self.select_all)"""
 
+        root.bind('<Control-s>', lambda event: self.save_file())
 
     def new_file(self):
         self.text_area.delete(1.0, tk.END)
