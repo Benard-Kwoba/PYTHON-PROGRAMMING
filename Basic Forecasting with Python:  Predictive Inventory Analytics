@@ -1,0 +1,86 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+"""
+WE WILL PREDICT DECEMBER 2023 STOCK-TAKE BASED ON EXISTING UNRESOLVED VARIANCES AND MISSING DATA FROM 23RD NOVEMBER
+Sample Data(df): 
+Dates	"All Beer 
+Products"	Resolved variances/posted breakages	Unresolved Variance
+6-Nov-23	1.943333333	0	1.943333333
+7-Nov-23	0	0	0
+8-Nov-23	-5	3	-2
+9-Nov-23	-2	2	0
+10-Nov-23	-4	0.16	-3.84
+11-Nov-23	-5	3.6	-1.4
+12-Nov-23	-2	1.12	-0.88
+13-Nov-23	-1	0	-1
+14-Nov-23	-5	0.801666667	-4.198333333
+15-Nov-23	4	0	4
+16-Nov-23	-5	2.76	-2.24
+17-Nov-23	-5	4.6	-0.4
+18-Nov-23	-1	0.4	-0.6
+19-Nov-23	0	0	0
+20-Nov-23	0	0	0
+21-Nov-23	0	0	0
+22-Nov-23	-1	1	0
+"""
+
+# Load data
+file_path = r'C:\Users\user\anaconda3\envs\NI1 Inventory app\warehouse excess and shorts(beer and keg).xlsx'
+worksheet_name = 'beer excess and shorts'
+df = pd.read_excel(file_path, sheet_name=worksheet_name, parse_dates=['Dates'], index_col='Dates')
+
+# Specify stock take date
+stock_take_date = pd.to_datetime('03.12.2023', format='%d.%m.%Y')
+
+# Extract the column of interest
+variance_series = df['Unresolved Variance']
+
+# Impute missing dates variances with the average unresolved variance for each day
+daily_average_variance = variance_series.groupby(variance_series.index.date).mean()
+variance_series = variance_series.combine_first(daily_average_variance.reindex(df.index.date))
+
+# Calculate the total unresolved variance for the stock-take day (includes both actual and imputed)
+total_variance = variance_series.sum()
+
+# Calculate the forecasted variances for the missing days (average of existing unresolved variances)
+forecasted_variance = variance_series.mean()
+
+# Forecasting
+forecast_steps = (stock_take_date - df.index[-1]).days  # Forecast until the stock take date
+forecast = pd.Series(forecasted_variance, index=pd.date_range(start=df.index[-1], periods=forecast_steps, freq='D'))
+
+# Calculate accuracy
+actual_variance = -19.65  # Replace with the actual variance value if available
+accuracy = 100 if pd.isna(actual_variance) else 100 - (abs(actual_variance - total_variance) / abs(actual_variance) * 100)
+
+# Visualize
+plt.figure(figsize=(10, 6))
+
+# Plot the actual variances
+plt.plot(variance_series.index, variance_series, label='Actual Variance')
+
+# Highlight the total variance on the stock-take day
+plt.scatter(stock_take_date, total_variance, color='red' if total_variance < 0 else 'green', s=100, zorder=5)
+plt.text(stock_take_date, total_variance, f'Expected\nVariance: {total_variance:.2f}', ha='left', va='center',
+         bbox=dict(facecolor='none', edgecolor='none'))
+
+# Plot the forecasted variances for the missing days
+plt.plot(forecast.index, forecast, label='Forecasted Variance', linestyle='--')
+
+# Add data labels for all days with 45-degree rotation
+for date, value in variance_series.items():
+    plt.text(date, value, f'{value:.2f}', ha='center', va='bottom', rotation=45)
+
+# Rotate x-axis labels
+plt.xticks(rotation=45, ha='right')
+
+# Add subtitle with accuracy information
+plt.title(f'Forecasting AGL Unresolved Beer Variance for December 2023 stock take\n\n(Accuracy: {accuracy:.2f}%)')
+
+
+plt.xlabel('Operation Dates')
+plt.ylabel('Variance in cases')
+plt.legend()
+plt.tight_layout()  # Ensures proper layout
+plt.show()
