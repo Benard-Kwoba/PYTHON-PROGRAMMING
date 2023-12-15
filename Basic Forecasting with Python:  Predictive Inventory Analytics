@@ -1,44 +1,42 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
 """
-STOCKTRACK:WE WILL PREDICT DECEMBER 2023 STOCK-TAKE BASED ON EXISTING UNRESOLVED VARIANCES AND MISSING DATA FROM 23RD NOVEMBER
-Sample Data(df): 
-Dates	"All Beer 
-Products"	Resolved variances/posted breakages	Unresolved Variance
-6-Nov-23	1.943333333	0	1.943333333
-7-Nov-23	0	0	0
-8-Nov-23	-5	3	-2
-9-Nov-23	-2	2	0
-10-Nov-23	-4	0.16	-3.84
-11-Nov-23	-5	3.6	-1.4
-12-Nov-23	-2	1.12	-0.88
-13-Nov-23	-1	0	-1
-14-Nov-23	-5	0.801666667	-4.198333333
-15-Nov-23	4	0	4
-16-Nov-23	-5	2.76	-2.24
-17-Nov-23	-5	4.6	-0.4
-18-Nov-23	-1	0.4	-0.6
-19-Nov-23	0	0	0
-20-Nov-23	0	0	0
-21-Nov-23	0	0	0
-22-Nov-23	-1	1	0
+SAMPLE DATA
+Dates	All Beer Products	Resolved variances/posted breakages	Unresolved Variance
+3-Dec-23	-0.276666667	0	-0.276666667
+4-Dec-23	1	0	1
+5-Dec-23	-2	0	-2
+6-Dec-23	-1105	0	-1105
+7-Dec-23	1123	0	1123
+8-Dec-23	7	0	7
+9-Dec-23	0	0	0
+10-Dec-23	-27	0	-27
+11-Dec-23	39	0	39
+12-Dec-23	-46	0	-46
+13-Dec-23	-6	2.965	-3.035
+14-Dec-23	-1	0	-1
 """
-
-# Load data
-file_path = r'C:\Users\user\anaconda3\envs\NI1 Inventory app\warehouse excess and shorts(beer and keg).xlsx'
+# Load data(replace with actual filepath)
+file_path = r'C:\Users\OtienBer\anaconda3\Lib\venv\NI1 Inventory app\warehouse excess and shorts(beer and keg).xlsx'
 worksheet_name = 'beer excess and shorts'
 df = pd.read_excel(file_path, sheet_name=worksheet_name, parse_dates=['Dates'], index_col='Dates')
 
 # Specify stock take date
-stock_take_date = pd.to_datetime('03.12.2023', format='%d.%m.%Y')
+stock_take_date = pd.to_datetime('08.01.2024', format='%d.%m.%Y')
 
 # Extract the column of interest
 variance_series = df['Unresolved Variance']
 
-# Impute missing dates variances with the average unresolved variance for each day
-daily_average_variance = variance_series.groupby(variance_series.index.date).mean()
-variance_series = variance_series.combine_first(daily_average_variance.reindex(df.index.date))
+# Identify missing dates
+missing_dates = pd.date_range(start=df.index[-1] + pd.Timedelta(days=1), end=stock_take_date)
+
+# Calculate the mean of existing unresolved variance values
+mean_existing_variance = variance_series.mean()
+
+# Impute missing dates with the mean
+variance_series = variance_series.combine_first(pd.Series(mean_existing_variance, index=missing_dates))
 
 # Calculate the total unresolved variance for the stock-take day (includes both actual and imputed)
 total_variance = variance_series.sum()
@@ -51,7 +49,7 @@ forecast_steps = (stock_take_date - df.index[-1]).days  # Forecast until the sto
 forecast = pd.Series(forecasted_variance, index=pd.date_range(start=df.index[-1], periods=forecast_steps, freq='D'))
 
 # Calculate accuracy
-actual_variance = -19.65  # Replace with the actual variance value if available
+actual_variance = np.nan  # Replace with the actual variance value if available (e.g., -19.65), else use np.nan
 accuracy = 100 if pd.isna(actual_variance) else 100 - (abs(actual_variance - total_variance) / abs(actual_variance) * 100)
 
 # Visualize
@@ -76,8 +74,7 @@ for date, value in variance_series.items():
 plt.xticks(rotation=45, ha='right')
 
 # Add subtitle with accuracy information
-plt.title(f'Forecasting AGL Unresolved Beer Variance for December 2023 stock take\n\n(Accuracy: {accuracy:.2f}%)')
-
+plt.title(f'Forecasting AGL Unresolved Beer Variance for January 2024 stock take\n\n(Accuracy: {accuracy:.2f}%)')
 
 plt.xlabel('Operation Dates')
 plt.ylabel('Variance in cases')
