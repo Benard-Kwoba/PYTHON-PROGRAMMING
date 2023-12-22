@@ -27,7 +27,7 @@ df = pd.read_excel(file_path, sheet_name=worksheet_name, parse_dates=['Dates'], 
 stock_take_date = pd.to_datetime('08.01.2024', format='%d.%m.%Y')
 
 # Extract the column of interest
-variance_series = df['Unresolved Variance']
+variance_series = df['Unresolved Variances']
 
 # Identify missing dates
 missing_dates = pd.date_range(start=df.index[-1] + pd.Timedelta(days=1), end=stock_take_date)
@@ -45,8 +45,21 @@ total_variance = variance_series.sum()
 forecasted_variance = variance_series.mean()
 
 # Forecasting
-forecast_steps = (stock_take_date - df.index[-1]).days  # Forecast until the stock take date
-forecast = pd.Series(forecasted_variance, index=pd.date_range(start=df.index[-1], periods=forecast_steps, freq='D'))
+forecast_steps = (stock_take_date - df.index[-1]).days  # Forecast until the stock take date(included)
+forecast = pd.Series(forecasted_variance, index=pd.date_range(start=df.index[-1] + pd.Timedelta(days=1),
+                                                              periods=forecast_steps, freq='D'))
+print("______________________________________FORECAST CHECK___________________________________________________________")
+print(f"Forecasting period: {(df.index[-1] + pd.Timedelta(days=1)).date()} - {stock_take_date.date()}(both included)\nTotal Days:{forecast_steps}\n")
+# check last operation day and it's variance
+last_operation_day = df.index[-1]
+last_operation_day_variance = variance_series.loc[last_operation_day]
+print(f"Last Operation Day: {last_operation_day}\nLast Operation Day's variance: {last_operation_day_variance}\n")
+# check first forecast day and it's variance
+first_forecast_day = df.index[-1] + pd.Timedelta(days=1)
+first_forecast_day_variance = variance_series.loc[first_forecast_day]
+print(f"First forecast day: {first_forecast_day.date()}\nFirst forecast day's variance: {first_forecast_day_variance}\n")
+print("CORRECT IMPUTATION" if first_forecast_day_variance == mean_existing_variance else "INCCORRECT IMPUTATION")
+print("_______________________________________________________________________________________________________________")
 
 # Calculate accuracy
 actual_variance = np.nan  # Replace with the actual variance value if available (e.g., -19.65), else use np.nan
