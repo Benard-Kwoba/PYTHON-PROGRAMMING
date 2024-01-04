@@ -90,7 +90,7 @@ plt.figure(figsize=(10, 6))
 plt.plot(variance_series.index, variance_series, label='Actual Variance')
 
 # Highlight the total variance on the stock-take day
-plt.scatter(stock_take_date, total_variance, color='red' if total_variance < 0 else 'green', s=100, zorder=5)
+plt.scatter(stock_take_date, total_variance, color='red' if total_variance < 0 else 'green', s=100, zorder=5, marker='*')
 plt.text(stock_take_date, total_variance, f'Expected\nVariance: {total_variance:.2f}', ha='left', va='center',
          color='white',
          bbox=dict(facecolor='green', edgecolor='yellow', alpha=0.5))
