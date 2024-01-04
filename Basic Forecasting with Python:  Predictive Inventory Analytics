@@ -1,3 +1,7 @@
+"""
+Demonstrates basic forecasting by means of mean imputation, exploring pythons visualization capabilities
+"""
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -74,7 +78,8 @@ plt.plot(variance_series.index, variance_series, label='Actual Variance')
 # Highlight the total variance on the stock-take day
 plt.scatter(stock_take_date, total_variance, color='red' if total_variance < 0 else 'green', s=100, zorder=5)
 plt.text(stock_take_date, total_variance, f'Expected\nVariance: {total_variance:.2f}', ha='left', va='center',
-         bbox=dict(facecolor='none', edgecolor='none'))
+         color='white',
+         bbox=dict(facecolor='green', edgecolor='yellow', alpha=0.5))
 
 # Plot the forecasted variances for the missing days
 plt.plot(forecast.index, forecast, label='Forecasted Variance', linestyle='--')
@@ -91,6 +96,6 @@ plt.title(f'Forecasting AGL Unresolved Beer Variance for January 2024 stock take
 
 plt.xlabel('Operation Dates')
 plt.ylabel('Variance in cases')
-plt.legend()
+plt.legend(loc='center right')
 plt.tight_layout()  # Ensures proper layout
 plt.show()
