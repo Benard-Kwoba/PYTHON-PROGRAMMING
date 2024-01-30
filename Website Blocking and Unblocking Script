@@ -1,0 +1,100 @@
+"""
+This Python script is designed to block or unblock specified websites by manipulating the system's hosts file.
+The hosts file is a plain text file that maps hostnames to IP addresses, and by redirecting a specific hostname
+to a non-existent or unreachable IP address, you can effectively block access to that site.
+
+"""
+
+import os
+import platform
+import shutil
+
+# define the websites you need to block/unblock
+websites_to_block = ["twitter.com", "www.google.com"]
+
+
+# This function is responsible for modifying the hosts file to block or unblock the specified websites.
+def block_unblock_websites(block=True):
+    try:
+        # Reading and Writing to the Hosts File: Get host file path
+        host_file_path = get_hosts_path()
+        # A temporary file (temp_file_path) to write the modified content before copying it back to the hosts file.
+        temp_file_path = host_file_path + ".bak"  # .bak is used to create a backup of the original hosts file
+
+        """
+        The script reads each line from the hosts file. It checks if the line contains 
+        any of the specified and based on the current status (blocked or unblocked), 
+        it updates the blocked variable accordingly. The script also determines whether 
+        to write the current line to the temporary file (f2) based on the to_write variable
+        """
+        blocked = 0
+        to_write = False
+
+        # Checking and Modifying Each Line:
+        with open(host_file_path, 'r') as f1, open(temp_file_path, 'w') as f2:
+            for line in f1:
+                to_write = True
+
+                # Blocking and Unblocking Logic:
+                for url in websites_to_block:
+                    if url in line:
+                        if blocked == 0:
+                            if line.startswith("#"):
+                                blocked = 1
+                            else:
+                                blocked = 2
+                        to_write = False
+                # Writing to Temporary File:
+                if to_write:
+                    f2.write(line)
+
+            # Adding Block Entry to Temporary File:
+            for url in websites_to_block:
+                if blocked != 2:
+                    f2.write(f"127.0.0.1\t\t{url}\n")
+
+        # Copying Temporary File to Hosts File:
+        shutil.copyfile(temp_file_path, host_file_path)
+
+        # The script prints a status message based on whether the specified websites are now blocked or unblocked.
+        if blocked == 2:
+            print("Time wasting websites have now been unblocked on this computer")
+        else:
+            print("Time wasting websites are now blocked on this computer!")
+
+    # Handling Exceptions:
+    except Exception as e:
+        # Note: you will need to run the code with Admin privilege e.g In Anaconda Prompt
+        print(f"Error: {e}")
+
+
+# function that returns the path to the hosts file based on the operating system
+def get_hosts_path():
+    system = platform.system().lower()
+    if system == 'windows':
+        return os.path.join(os.environ['SystemRoot'], 'System32', 'drivers', 'etc', 'hosts')
+    elif system == 'linux':
+        return '/etc/hosts'
+    elif system == 'darwin':
+        return '/private/etc/hosts'
+    else:
+        raise NotImplementedError(f'Unsupported operating system: {system}')
+
+
+# Main Block:
+if __name__ == "__main__":
+    # Example usage
+    selection = int(input(f"""
+Enter 1 to block sites or 0 to unblock blocked sites:
+
+"""))
+    try:
+        if selection == 1:
+            block_unblock_websites(block=True)
+        elif selection == 0:
+            block_unblock_websites(block=False)
+    except ValueError:
+        print('Wrong selection!!!')
+        exit()
+    finally:
+        print('_________________ Coded by Benayahu _____________________')
