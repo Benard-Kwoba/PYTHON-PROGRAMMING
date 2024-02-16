@@ -34,13 +34,15 @@ class CalculatorApp(QWidget):  # QWidget- "parent class" or "base class" , Calcu
         main_layout.addLayout(input_layout)
         main_layout.addLayout(button_layout)
 
+        self.input_field.returnPressed.connect(self.on_button_clicked)
+
     # Define the slot method to handle button clicks
     def on_button_clicked(self):
         sender = self.sender()  # Get the sender of the signal (the button that was clicked)
         btn_text = sender.text()  # Get the text of the button that was clicked
 
         # If the "=" button was clicked, evaluate the expression in the input field
-        if btn_text == "=":
+        if btn_text == "=" or sender is self.input_field:
             try:
                 result = eval(self.input_field.text())  # Evaluate the expression in the input field
                 self.input_field.setText(str(result))  # Display the result in the input field
