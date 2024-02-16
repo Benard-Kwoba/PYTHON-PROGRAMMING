@@ -36,6 +36,16 @@ class CalculatorApp(QWidget):  # QWidget- "parent class" or "base class" , Calcu
 
         self.input_field.returnPressed.connect(self.on_button_clicked)
 
+        # Apply stylesheets to buttons and input field
+        self.input_field.setStyleSheet(
+            "QLineEdit { background-color: #ADF802; border: 2px solid black; border-radius: 5px; padding: 5px;}"
+        )
+        for button in self.findChildren(QPushButton):
+            button.setStyleSheet(
+                "QPushButton { background-color: gold; border: 2px solid black; border-radius: 10px; padding: 10px; }"
+                "QPushButton:hover { background-color: green; }"
+            )
+
     # Define the slot method to handle button clicks
     def on_button_clicked(self):
         sender = self.sender()  # Get the sender of the signal (the button that was clicked)
