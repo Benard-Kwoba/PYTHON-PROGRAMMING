@@ -35,6 +35,7 @@ class CalculatorApp(QWidget):  # QWidget- "parent class" or "base class" , Calcu
         main_layout.addLayout(button_layout)
 
         self.input_field.returnPressed.connect(self.on_button_clicked)
+        self.input_field.setPlaceholderText("Enter your calculation here")
 
         # Apply stylesheets to buttons and input field
         self.input_field.setStyleSheet(
