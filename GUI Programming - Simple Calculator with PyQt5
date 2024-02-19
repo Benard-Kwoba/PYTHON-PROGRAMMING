@@ -8,6 +8,8 @@ class CalculatorApp(QWidget):  # QWidget- "parent class" or "base class" , Calcu
         super().__init__()  # Call the constructor of the base class (QWidget)
         self.setWindowTitle("Simple Calculator")  # Set the window title
         self.resize(200, 300)  # Resize the window
+        self.setStyleSheet("background-color: black;")
+
 
         # Create layout managers for arranging widgets vertically and horizontally
         main_layout = QVBoxLayout(self)  # Create a vertical layout for the main layout
@@ -39,11 +41,12 @@ class CalculatorApp(QWidget):  # QWidget- "parent class" or "base class" , Calcu
 
         # Apply stylesheets to buttons and input field
         self.input_field.setStyleSheet(
-            "QLineEdit { background-color: #ADF802; border: 2px solid black; border-radius: 5px; padding: 5px;}"
+            "QLineEdit { background-color: #ADF802; border: 2px solid wheat; border-radius: 5px; padding: 5px;"
+            "font-size: 15px}"
         )
         for button in self.findChildren(QPushButton):
             button.setStyleSheet(
-                "QPushButton { background-color: gold; border: 2px solid black; border-radius: 10px; padding: 10px; }"
+                "QPushButton { background-color: gold; border: 2px solid red; border-radius: 10px; padding: 10px; }"
                 "QPushButton:hover { background-color: green; }"
             )
 
