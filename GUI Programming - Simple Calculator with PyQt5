@@ -1,5 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLineEdit, QGridLayout
+from PyQt5.QtCore import Qt  # Import the Qt module
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLineEdit, QGridLayout, QLabel
 
 # Define a class for the calculator application
 class CalculatorApp(QWidget):  # QWidget- "parent class" or "base class" , CalculatorApp class
@@ -16,9 +17,13 @@ class CalculatorApp(QWidget):  # QWidget- "parent class" or "base class" , Calcu
         input_layout = QVBoxLayout()  # Create a vertical layout for input field, not linked with any widget instance
         button_layout = QGridLayout()  # Create a grid layout for the buttons
 
+
         # Create the input field (QLineEdit) and add it to the input layout
         self.input_field = QLineEdit()
         input_layout.addWidget(self.input_field)
+        # Add author field/label
+        self.author_label = QLabel("CREATED BY BENAYAHU")
+        self.author_label.setStyleSheet("color: white; text-decoration: underline;")
 
         # Define the text for the buttons and create buttons for each text
         buttons = [
@@ -35,9 +40,14 @@ class CalculatorApp(QWidget):  # QWidget- "parent class" or "base class" , Calcu
         # Add the input layout and button layout to the main layout
         main_layout.addLayout(input_layout)
         main_layout.addLayout(button_layout)
+        # Add the author_label to the main layout
+        main_layout.addWidget(self.author_label, alignment=Qt.AlignBottom | Qt.AlignCenter)
+        # bitwise OR operator: ensures that the widget is positioned at the bottom center of its layout or parent widget
 
         self.input_field.returnPressed.connect(self.on_button_clicked)
         self.input_field.setPlaceholderText("Enter your calculation here")
+        self.input_field.setToolTip("Keyboard keys supported")  # Add a tooltip
+
 
         # Apply stylesheets to buttons and input field
         self.input_field.setStyleSheet(
