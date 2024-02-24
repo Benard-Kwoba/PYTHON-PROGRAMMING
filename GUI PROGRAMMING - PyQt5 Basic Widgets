@@ -134,14 +134,18 @@ class Example(QWidget):
         vbox.addWidget(table_widget)
         vbox.addWidget(date_time_edit)
         vbox.addWidget(plain_text_edit)
-        vbox.addWidget(color_dialog_button)
-        vbox.addWidget(file_dialog_button)
-        vbox.addWidget(message_box_button)
-        vbox.addWidget(input_dialog_button)
-        vbox.addWidget(web_view_button)
+        hbox.addWidget(color_dialog_button)
+        hbox.addWidget(file_dialog_button)
+        hbox.addWidget(message_box_button)
+        hbox.addWidget(input_dialog_button)
+        hbox.addWidget(web_view_button)
 
-        # Set layouts
-        self.setLayout(vbox)
+        # Set the vertical layout as the main layout
+        layout = QVBoxLayout()
+        layout.addLayout(vbox)
+        layout.addLayout(hbox)
+
+        self.setLayout(layout)
 
         # Connect signals
         color_dialog_button.clicked.connect(self.open_color_dialog)
