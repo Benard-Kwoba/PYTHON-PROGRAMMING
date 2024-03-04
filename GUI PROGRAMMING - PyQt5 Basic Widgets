@@ -2,7 +2,8 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QLineEdit, QComboBox, QCheckBox, \
     QRadioButton, QSpinBox, QDoubleSpinBox, QSlider, QProgressBar, QTextEdit, QListWidget, QTableWidget, \
     QDateTimeEdit, QPlainTextEdit, QColorDialog, QFileDialog, QMessageBox, QInputDialog, \
-    QVBoxLayout, QHBoxLayout, QGridLayout, QFormLayout
+    QVBoxLayout, QHBoxLayout, QGridLayout, QFormLayout, QCalendarWidget, QMainWindow, QAction, QTabWidget, \
+    QTableWidget, QScrollBar, QDialog, QDialogButtonBox
 from PyQt5.QtWidgets import QFontDialog, QColorDialog, QInputDialog, QStyle
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt, QUrl
@@ -195,62 +196,72 @@ class Example(QWidget):
         self.web_view.show()
         # self.web_view.setVisible(not self.web_view.isVisible()) To toggle web view visibility
 
-
-"""
-TABWIDGET AND GROUPBOX
-import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QGroupBox, QPushButton
-
-class MyMainWindow(QMainWindow):
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("TabWidget and GroupBox Example")
-        self.setGeometry(100, 100, 400, 300)
+        # Create central widget
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
 
-        self.central_widget = QWidget()
-        self.setCentralWidget(self.central_widget)
-
-        self.layout = QVBoxLayout(self.central_widget)
-
-        # Create a QTabWidget
-        self.tab_widget = QTabWidget()
-
-        # Create tabs
-        tab1 = QWidget()
-        tab2 = QWidget()
-
-        # Add tabs to the tab widget
-        self.tab_widget.addTab(tab1, "Tab 1")
-        self.tab_widget.addTab(tab2, "Tab 2")
-
-        # Add GroupBoxes to each tab
-        self.add_groupbox_to_tab(tab1, "Group Box in Tab 1")
-        self.add_groupbox_to_tab(tab2, "Group Box in Tab 2")
-
-        self.layout.addWidget(self.tab_widget)
-
-    def add_groupbox_to_tab(self, tab, title):
-        groupbox = QGroupBox(title)
+        # Create layouts
         vbox = QVBoxLayout()
+        hbox = QHBoxLayout()
+        main_layout = QVBoxLayout(central_widget)
 
-        # Add buttons to the group box
-        for i in range(1, 4):
-            button = QPushButton(f"Button {i}")
-            vbox.addWidget(button)
+        # Create widgets for the main window
+        button = QPushButton('Open QWidgets')
+        button.setStyleSheet("background-color: black; color: white;")
+        calendar = QCalendarWidget()
+        calendar.setToolTip("QCalendarWidget")
+        tab_widget = QTabWidget()
+        scroll_bar = QScrollBar()
+        scroll_bar.setToolTip('QScrollBar')
 
-        groupbox.setLayout(vbox)
-        layout = QVBoxLayout(tab)
-        layout.addWidget(groupbox)
+        # Create two widgets for the tabs
+        tab1_widget = QWidget()
+        tab1_widget.setToolTip("QTabWidget")
+        tab2_widget = QWidget()
+        tab2_widget.setToolTip("QTabWidget")
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = MyMainWindow()
-    window.show()
-    sys.exit(app.exec_())
+        # Create layouts for each tab
+        tab1_layout = QVBoxLayout(tab1_widget)
+        tab2_layout = QVBoxLayout(tab2_widget)
 
-"""
+        # Add widgets to layouts of each tab
+        tab1_layout.addWidget(QLabel("This is Tab 1"))
+        tab2_layout.addWidget(QLabel("This is Tab 2"))
+
+        # Add tab widgets to the tab widget
+        tab_widget.addTab(tab1_widget, "Tab 1")
+        tab_widget.addTab(tab2_widget, "Tab 2")
+
+        # Set scroll bar orientation to horizontal
+        scroll_bar.setOrientation(Qt.Horizontal)
+
+        # Add widgets to layouts
+        vbox.addWidget(calendar)
+        hbox.addWidget(tab_widget)
+        vbox.addWidget(scroll_bar)
+
+        main_layout.addLayout(vbox)
+        main_layout.addWidget(button)
+        main_layout.addLayout(hbox)
+
+
+        # Connect button click to open Example dialog
+        button.clicked.connect(self.open_example)
+
+        self.setWindowTitle('Main Window(QMainWindow)')
+
+    def open_example(self):
+        self.example_dialog = Example()  # Store a reference to the Example dialog to prevent it from being destroyed
+        self.example_dialog.show()
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = Example()
+    # Example widget
+    ex = MainWindow()
+    ex.show()
     sys.exit(app.exec_())
