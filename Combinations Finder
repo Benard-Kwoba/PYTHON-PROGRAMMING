@@ -1,0 +1,73 @@
+import sys
+import itertools
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLineEdit, QPushButton, QLabel, QTextEdit
+
+
+class CombinationFinder(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.initUI()
+
+    def initUI(self):
+        self.layout = QVBoxLayout()
+
+        # Input for numbers
+        self.numbersLabel = QLabel("Enter the numbers (one per line, thousand-separated with commas):", self)
+        self.layout.addWidget(self.numbersLabel)
+
+        self.numbersField = QTextEdit(self)
+        self.layout.addWidget(self.numbersField)
+
+        # Input for target
+        self.targetLabel = QLabel("Enter the target number:", self)
+        self.layout.addWidget(self.targetLabel)
+
+        self.targetField = QLineEdit(self)
+        self.layout.addWidget(self.targetField)
+
+        # Button to find combination
+        self.findButton = QPushButton("Find Combination", self)
+        self.findButton.clicked.connect(self.on_click)
+        self.layout.addWidget(self.findButton)
+
+        # Result label
+        self.resultLabel = QLabel("", self)
+        self.layout.addWidget(self.resultLabel)
+
+        self.setLayout(self.layout)
+
+        self.setWindowTitle('Combination Finder')
+        self.show()
+
+    def find_combinations(self, numbers, target):
+        for r in range(1, len(numbers) + 1):
+            for combination in itertools.combinations(numbers, r):
+                if sum(combination) == target:
+                    return combination
+        return None
+
+    def on_click(self):
+        try:
+            # Read and process numbers input
+            numbers_str = self.numbersField.toPlainText().strip()
+            numbers = [int(num.strip().replace(',', '')) for num in numbers_str.split('\n') if num.strip()]
+
+            # Read and process target input
+            target = int(self.targetField.text().replace(',', ''))
+
+            # Find combination
+            result = self.find_combinations(numbers, target)
+
+            if result:
+                self.resultLabel.setText(f"Combination that sums to {target}: {result}")
+            else:
+                self.resultLabel.setText(f"No combination found that sums to {target}")
+        except ValueError:
+            self.resultLabel.setText("Please enter valid numbers and target.")
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    ex = CombinationFinder()
+    sys.exit(app.exec_())
