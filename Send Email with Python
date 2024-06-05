@@ -1,0 +1,30 @@
+import win32com.client as win32
+import os
+
+# Get the file path of the attachment
+attachment_path = os.path.join(os.path.expanduser("~"), "Desktop", "Beer and Keg Dispatches.xlsx")
+
+# Create the Outlook application object
+outlook = win32.Dispatch("Outlook.Application")
+namespace = outlook.GetNamespace("MAPI")
+
+# Construct the email item object
+mail_item = outlook.CreateItem(0)
+mail_item.Subject = "Hello 123"
+mail_item.BodyFormat = 1
+mail_item.Body = "Hello There"
+mail_item.To = "benayahu...@....; benayahu...@...."
+mail_item.CC = "benayahu...@...."
+mail_item.Sensitivity = 2
+
+# Attach the file
+attachment = mail_item.Attachments.Add(attachment_path)
+
+# Set the sender's email address
+mail_item.SentOnBehalfOfName = "benayahu...@...."
+
+# Send the email
+mail_item.Send()
+
+# Display a message indicating the email has been sent
+print("Email sent successfully!")
