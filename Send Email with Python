@@ -1,3 +1,4 @@
+# __________________________________________________ BASIC USE __________________________________________________________________________
 import win32com.client as win32
 import os
 
@@ -28,3 +29,65 @@ mail_item.Send()
 
 # Display a message indicating the email has been sent
 print("Email sent successfully!")
+
+# __________________________________________________ ADVANCED USE __________________________________________________________________________
+import win32com.client as win32
+import os
+import datetime
+import time
+
+def send_email():
+    # Get the file path of the attachment
+    attachment_path = os.path.join(os.path.expanduser("~"), "Desktop", "css.txt")
+
+    # Create the Outlook application object
+    outlook = win32.Dispatch("Outlook.Application")
+    namespace = outlook.GetNamespace("MAPI")
+
+    # Construct the email item object
+    mail_item = outlook.CreateItem(0)
+    mail_item.Subject = "Daily Report"
+    mail_item.BodyFormat = 1
+    mail_item.Body = "Here is your daily report."
+    mail_item.To = "bernard.otieno@eabl.com"
+    mail_item.CC = "bernard.otieno@eabl.com"
+    mail_item.Sensitivity = 2
+
+    # Attach the file
+    attachment = mail_item.Attachments.Add(attachment_path)
+
+    # Set the sender's email address
+    # mail_item.SentOnBehalfOfName = "benardotieno107@gmail.com"
+
+    # Send the email
+    mail_item.Send()
+
+    # Display a message indicating the email has been sent
+    print("Email sent successfully!")
+
+# Function to calculate time until 12:30 PM today or tomorrow
+def time_until_1230():
+    now = datetime.datetime.now()
+    target_time = now.replace(hour=12, minute=21, second=0, microsecond=0)
+    if now > target_time:
+        target_time += datetime.timedelta(days=1)  # If it's past 12:30 PM, schedule for tomorrow
+    return (target_time - now).total_seconds()
+
+# Calculate initial delay until 12:30 PM
+initial_delay = time_until_1230()
+
+# Sleep until 12:30 PM
+time.sleep(initial_delay)
+
+# Loop to send email daily at 12:30 PM
+while True:
+    # Send the email
+    send_email()
+
+    # Wait for the next day
+    time.sleep(24 * 60 * 60)  # Sleep for 24 hours (86400 seconds) to repeat next day
+
+
+
+
+
