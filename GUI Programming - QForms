@@ -1,0 +1,153 @@
+import sys
+from PyQt5.QtWidgets import (
+    QApplication, QWidget, QFormLayout,
+    QLabel, QLineEdit, QPushButton, QMessageBox,
+    QVBoxLayout, QHBoxLayout, QGroupBox, QTableWidget,
+    QTableWidgetItem, QHeaderView
+)
+from PyQt5.QtGui import QIcon, QIntValidator, QDoubleValidator
+from PyQt5.QtCore import Qt
+
+# LOAN AGENCY DATA
+customer_ids = [29931077, 10555555, 48788887]
+account_balance = [500, 1250, 5800]
+crb_ratings = [1, 0, 1]  # 1 if compliant, 0 if not
+
+
+def Credit(userID, loanAmount):
+    if userID not in customer_ids:
+        return 'Dear customer, kindly register to access this service.'
+    else:
+        """Finding user account balance"""
+        idxUser = customer_ids.index(userID)
+        user_acc_balance = account_balance[idxUser]
+        facility_fee = round(0.1 * loanAmount, 2)
+        loan_to_credit = round(loanAmount - facility_fee, 2)
+        maxLoan = 0.8 * user_acc_balance
+        userCRB = crb_ratings[idxUser]
+
+        # Checking user's compliance
+        if loan_to_credit > maxLoan:
+            return 'Loan not approved: Loan exceeds 80% of your account balance.\nConsider the facility fee of 10%.'
+        elif loan_to_credit <= maxLoan and userCRB == 1:
+            # Update the account balance
+            account_balance[idxUser] += loan_to_credit
+            return f'Loan Approved: Ksh. {loan_to_credit} credited to your account.\nNew Balance: Ksh. {account_balance[idxUser]}'
+        else:
+            return 'Loan not approved: CRB rating is not compliant.'
+
+
+class LoanApp(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle('Loan Agency Application')
+        self.setGeometry(100, 100, 600, 400)
+        self.initUI()
+
+    def initUI(self):
+        # Main layout
+        main_layout = QVBoxLayout()
+
+        # Group box for Loan Application Details
+        loan_group_box = QGroupBox('Loan Application Details')
+        loan_layout = QFormLayout()
+
+        # User ID input
+        self.user_id_input = QLineEdit()
+        self.user_id_input.setPlaceholderText('Enter your User ID')
+        self.user_id_input.setToolTip('Enter your unique User ID assigned by the agency.')
+        self.user_id_input.setValidator(QIntValidator())
+        loan_layout.addRow('User ID:', self.user_id_input)
+
+        # Loan Amount input
+        self.loan_amount_input = QLineEdit()
+        self.loan_amount_input.setPlaceholderText('Enter Loan Amount (Ksh.)')
+        self.loan_amount_input.setToolTip('Enter the amount you wish to borrow in Kenyan Shillings.')
+        self.loan_amount_input.setValidator(QDoubleValidator(0.00, 1000000.00, 2))
+        loan_layout.addRow('Loan Amount:', self.loan_amount_input)
+
+        # Apply and Reset buttons
+        button_layout = QHBoxLayout()
+        self.apply_button = QPushButton('Apply for Loan')
+        self.apply_button.setIcon(QIcon())  # Optionally set an icon
+        self.apply_button.clicked.connect(self.apply_loan)
+
+        self.reset_button = QPushButton('Reset')
+        self.reset_button.setIcon(QIcon())  # Optionally set an icon
+        self.reset_button.clicked.connect(self.reset_fields)
+
+        button_layout.addWidget(self.apply_button)
+        button_layout.addWidget(self.reset_button)
+
+        loan_layout.addRow(button_layout)
+
+        loan_group_box.setLayout(loan_layout)
+
+        # Group box for Customer Details
+        customer_group_box = QGroupBox('Customer Details')
+        customer_layout = QVBoxLayout()
+
+        # Table to display customer details
+        self.customer_table = QTableWidget()
+        self.customer_table.setRowCount(len(customer_ids))
+        self.customer_table.setColumnCount(3)
+        self.customer_table.setHorizontalHeaderLabels(['Customer ID', 'Account Balance (Ksh.)', 'CRB Rating'])
+        self.customer_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.populate_table()
+
+        customer_layout.addWidget(self.customer_table)
+        customer_group_box.setLayout(customer_layout)
+
+        # Add group boxes to main layout
+        main_layout.addWidget(loan_group_box)
+        main_layout.addWidget(customer_group_box)
+
+        self.setLayout(main_layout)
+
+
+    def populate_table(self):
+        for row, (cid, balance, crb) in enumerate(zip(customer_ids, account_balance, crb_ratings)):
+            self.customer_table.setItem(row, 0, QTableWidgetItem(str(cid)))
+            self.customer_table.setItem(row, 1, QTableWidgetItem(f'Ksh. {balance}'))
+            crb_status = 'Compliant' if crb == 1 else 'Non-Compliant'
+            self.customer_table.setItem(row, 2, QTableWidgetItem(crb_status))
+
+    def apply_loan(self):
+        try:
+            user_id = int(self.user_id_input.text())
+        except ValueError:
+            QMessageBox.warning(self, 'Input Error', 'Please enter a valid integer for User ID.')
+            return
+
+        try:
+            loan_amount = float(self.loan_amount_input.text())
+            if loan_amount <= 0:
+                raise ValueError
+        except ValueError:
+            QMessageBox.warning(self, 'Input Error', 'Please enter a valid positive number for Loan Amount.')
+            return
+
+        # Call the Credit function
+        result = Credit(user_id, loan_amount)
+
+        # Update the table to reflect any changes in account balance
+        self.customer_table.clearContents()
+        self.populate_table()
+
+        # Display the result
+        if 'approved' in result.lower():
+            QMessageBox.information(self, 'Loan Status', result)
+        else:
+            QMessageBox.warning(self, 'Loan Status', result)
+
+    def reset_fields(self):
+        self.user_id_input.clear()
+        self.loan_amount_input.clear()
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    loan_app = LoanApp()
+    loan_app.setWindowIcon(QIcon())  # Optionally set a window icon
+    loan_app.show()
+    sys.exit(app.exec_())
