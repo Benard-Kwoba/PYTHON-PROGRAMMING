@@ -1,0 +1,22 @@
+import os
+import glob
+
+"""
+Script Name: ZeroByte DotFix Cleaner
+What It Does:
+This script scans a specified directory and deletes zero-byte files, including those that have a dot (.) at the end in 
+Windows. Since Windows has restrictions on handling such files, the script uses extended path syntax (\\?\) to properly 
+detect and remove them.
+"""
+
+# Set the directory path (change this to your target directory)
+directory = r"C:\Users\xxxr\Desktop"
+
+# Use glob to find files ending with a dot
+for file_path in glob.glob(os.path.join(directory, "*.")):  # Matches files ending with "."
+    full_path = f"\\\\?\\{file_path}"  # Windows extended path syntax
+    if os.path.getsize(full_path) == 0:  # Check if file is zero-byte
+        os.remove(full_path)  # Delete the file
+        print(f"Deleted: {file_path}")
+
+print("Zero-byte files ending with a dot deleted successfully.")
