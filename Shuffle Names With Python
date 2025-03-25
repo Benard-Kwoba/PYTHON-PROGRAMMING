@@ -1,0 +1,49 @@
+import pandas as pd
+import numpy as np
+
+# Load the CSV file
+df = pd.read_csv('agl_employees.csv')  # load your csv
+
+"""
+sample data
+Group A	Group B	Group C
+Billy	Doe	Hellen
+Suzzy	Alice	Keter
+Belinda	John	Susan
+Anne	Alex	Kelly
+
+"""
+# Flatten the list of names across all groups
+all_names = df.values.flatten()
+
+# Shuffle the names randomly
+np.random.shuffle(all_names)
+
+# Calculate the number of groups (columns in the original DataFrame)
+num_groups = df.shape[1]
+
+# Calculate how many people go into each group
+group_size = len(all_names) // num_groups
+
+# Rebuild the DataFrame with shuffled groups
+shuffled_groups = {}
+
+# Distribute shuffled names into groups
+for i in range(num_groups):
+    shuffled_groups[f'Group {chr(65 + i)}'] = list(all_names[i*group_size:(i+1)*group_size])
+
+# Handle any remaining names (if not divisible evenly)
+remaining_names = all_names[num_groups * group_size:]
+for i, name in enumerate(remaining_names):
+    group_index = i % num_groups  # Distribute remaining names across groups
+    shuffled_groups[f'Group {chr(65 + group_index)}'].append(name)
+
+# Create the final shuffled DataFrame
+df_shuffled = pd.DataFrame(shuffled_groups)
+
+# Write the shuffled data to an Excel file
+output_filename = 'shuffled_groups.xlsx'
+df_shuffled.to_excel(output_filename, index=False, engine='openpyxl')
+
+# Print the output to verify
+print(f"Shuffled groups have been saved to {output_filename}")
