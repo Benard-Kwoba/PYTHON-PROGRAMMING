@@ -1,0 +1,93 @@
+import datetime
+import win32com.client as wcl
+
+
+def extract_sap_data(year: int):
+    """
+    Extracts SAP data based on a date range (first_date to last_date, inclusive).
+
+    **Required Variables:**
+    - **Date Variables:**
+        - `start_date`: Marks the beginning of the loop.
+        - `end_date`: Defines the loop's termination condition.
+
+    - **String Variables:**
+        - `sap_date`: Stores dates formatted as `mm/dd/yyyy` (`m/d/Y`).
+        - `current_date`: Dynamically updates based on loop progression.
+        - `file_date`: Appends formatted dates (`Y_m_d`) to filenames.
+        - `file_name`: Represents the final export file (e.g., `export_2025_05_08.xls`).
+        - These string variables are redefined at each iteration.
+
+    - **Integral Variables:**
+        - `delta`: Acts as a date counter, incrementing based on parameterized days (e.g., `days=1`).
+
+    - **Windows Object Variables:**
+        - `sapgui`: The SAP UI object exposed by Windows.
+        - `application`: The SAP GUI scripting engine, exposing methods for manipulation.
+        - `connection`: Establishes the GUI interaction session (e.g., `DEP ECC`).
+        - `session`: Represents the specific instance used for GUI actions.
+        - Note: This scripts assumes the user has opened SAP session (without cached data) if not please restart SAP
+
+    **Logic Flow:**
+    - Utilizes a `while` loop to continuously extract data as long as `current_date ≤ end_date`.
+    - The `current_date` is incremented using `delta` to iterate until reaching the final date.
+    """
+    sap_gui = wcl.GetObject("SAPGUI")
+    application = sap_gui.GetScriptingEngine
+    connection = application.Children(0)
+    session = connection.Children(0)
+
+    start_date = datetime.date(year, 5, 1)
+    end_date = datetime.date(year, 5, 5)
+    delta = datetime.timedelta(days=1)
+
+    current_date = start_date
+    while current_date <= end_date:
+        # Format: MM/DD/YYYY for SAP
+        sap_date = current_date.strftime("%m/%d/%Y")
+        file_date = current_date.strftime("%Y_%m_%d")  # For safe file naming
+
+        print(f"Extracting data for {sap_date}...")
+
+        # SAP MB51 navigation and input
+        session.findById("wnd[0]").maximize()
+        session.findById("wnd[0]/tbar[0]/okcd").Text = "/nmb51"
+        session.findById("wnd[0]").sendVKey(0)
+        session.findById("wnd[0]/usr/btn%_WERKS_%_APP_%-VALU_PUSH").press()
+        session.findById(
+            "wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/ctxtRSCSEL_255-SLOW_I[1,0]").Text = "TA2"
+        session.findById(
+            "wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/ctxtRSCSEL_255-SLOW_I[1,1]").Text = "TA2"
+        session.findById(
+            "wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/ctxtRSCSEL_255-SLOW_I[1,1]").SetFocus()
+        session.findById(
+            "wnd[1]/usr/tabsTAB_STRIP/tabpSIVA/ssubSCREEN_HEADER:SAPLALDB:3010/tblSAPLALDBSINGLE/ctxtRSCSEL_255-SLOW_I[1,1]").caretPosition = 3
+        session.findById("wnd[1]/tbar[0]/btn[8]").press()
+        session.findById("wnd[0]/usr/ctxtLGORT-LOW").Text = "5004"
+        session.findById("wnd[0]/usr/ctxtBUDAT-LOW").Text = sap_date
+        session.findById("wnd[0]/usr/ctxtBUDAT-HIGH").Text = sap_date
+        session.findById("wnd[0]/usr/ctxtALV_DEF").Text = "BANAYAHU"  # if using another layout, update this code block
+        session.findById("wnd[0]/usr/ctxtALV_DEF").SetFocus()
+        session.findById("wnd[0]/usr/ctxtALV_DEF").caretPosition = 8
+        session.findById("wnd[0]").sendVKey(0)
+        session.findById("wnd[0]/tbar[1]/btn[8]").press()
+        session.findById("wnd[0]/mbar/menu[3]/menu[6]/menu[0]").Select()
+        session.findById("wnd[0]").sendVKey(9)
+        session.findById(
+            "wnd[1]/usr/subSUBSCREEN_STEPLOOP:SAPLSPO5:0150/sub:SAPLSPO5:0150/radSPOPLI-SELFLAG[1,0]").Select()
+        session.findById(
+            "wnd[1]/usr/subSUBSCREEN_STEPLOOP:SAPLSPO5:0150/sub:SAPLSPO5:0150/radSPOPLI-SELFLAG[1,0]").SetFocus()
+        session.findById("wnd[1]/tbar[0]/btn[0]").press()
+        filename = f"BREAKAGES_{file_date}.XLS"
+        session.findById("wnd[1]/usr/ctxtDY_PATH").Text = r"C:\Users\OtienBer\Desktop"
+        session.findById("wnd[1]/usr/ctxtDY_FILENAME").Text = filename
+        session.findById("wnd[1]/usr/ctxtDY_FILENAME").caretPosition = 22
+        session.findById("wnd[1]/tbar[0]/btn[11]").press()
+
+        print(f"Saved file: {filename}")
+        current_date += delta
+
+
+if __name__ == "__main__":
+    # print(extract_sap_data.__doc__)
+    extract_sap_data(2025)
