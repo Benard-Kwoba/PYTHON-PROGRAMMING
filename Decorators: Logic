@@ -1,0 +1,25 @@
+# Define a decorator function (log_function_call) that logs before and after a function call (func)
+# func is a reference to the actual function, not a call to it.
+def log_function_call(func):  # 'func' is the function being decorated
+    # Define a wrapper function that wraps around the original 'func'
+    # It accepts any number of arguments using *args (positional) and **kwargs (keyword).
+    def wrapper(*args, **kwargs):  # Accept any arguments passed to 'func'
+        print(f"Calling function: {func.__name__}")  # Log before the function runs
+
+        result = func(*args, **kwargs)  # Call the original function with its arguments
+
+        print(f"Finished function: {func.__name__}")  # Log after the function completes
+
+        return result  # Return the result from the original function
+
+    return wrapper  # Return the wrapper to replace the original function
+
+
+# Apply the decorator to the 'greet' function using '@' syntax
+@log_function_call  # Equivalent to: greet = log_function_call(greet)
+def greet(name):  # Define a function that takes a name and prints a greeting
+    print(f"Hello, {name}!")  # Output the greeting
+
+
+# Call the decorated function
+greet(name="Alice")  # This will trigger 'wrapper', which calls 'greet' and logs before/after
